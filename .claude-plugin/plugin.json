@@ -1,6 +1,6 @@
 {
   "name": "clinearhub",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Cowork-first PM methodology for Claudian. Spec-to-ship pipeline with plan persistence, roadmap management, and cross-surface sync — built for Linear + GitHub + PostHog + Sentry + Figma.",
   "author": {
     "name": "Cian O'Sullivan",

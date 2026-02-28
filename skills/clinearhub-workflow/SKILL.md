@@ -152,8 +152,14 @@ Before creating any issue, search Linear for existing coverage:
 - **Pilot before bulk.** Tasks affecting 10+ items → pilot batch of 3-5 first.
 - **Verb-first naming.** `Build X`, `Implement Y`, `Fix Z`. No bracket prefixes.
 
+## Cross-Surface References
+
+> See [references/cross-surface-references.md](references/cross-surface-references.md) for the full convention.
+
+Every file reference in Linear issues, comments, and session output must be a clickable hyperlink to its source. Every CIA-XXX mention must be a clickable markdown link. Language must be adapted to the target surface (GitHub = technical, Linear = process-focused, Cowork = conversational, Stakeholder = strategic). See the reference file for patterns, examples, and operational discipline rules.
+
 ## Cross-Skill References
 
 - **spec-enrichment** — Governs Step 2 (PR/FAQ templates, ChatPRD personas, AC writing)
-- **issue-lifecycle** — Governs status transitions, closure, session close protocol
-- **plan-persistence** — Governs plan lifecycle, Step 4.5 reconciliation, agent identity
+- **issue-lifecycle** — Governs status transitions, closure, session close protocol, issue content quality
+- **plan-persistence** — Governs plan lifecycle, Step 4.5 reconciliation, agent identity, multimedia attachments

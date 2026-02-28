@@ -87,6 +87,43 @@ Common starters: Build, Implement, Fix, Add, Create, Evaluate, Survey, Design, M
 
 Non-actionable content (research notes, decisions, session learnings) should be Linear Documents, not issues. Test: "Can someone mark this Done?" If no, it's a document.
 
+## Issue Content Quality
+
+> Full convention: [cross-surface-references.md](../clinearhub-workflow/references/cross-surface-references.md)
+
+### References Section
+
+Every issue description must include a `## References` section with hyperlinked docs, specs, and reference files. File mentions must link to their GitHub source:
+
+```markdown
+## References
+
+- [cowork-instructions.md](https://github.com/Cianai/ClinearHub/blob/main/packages/clinear-plugin/skills/clinearhub-workflow/references/cowork-instructions.md)
+- [Pipeline Architecture](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f)
+```
+
+Exceptions: Simple `type:chore` issues with self-contained scope may omit References.
+
+### Dispatch Context
+
+Before dispatching any issue to an external agent (Factory, Cursor, Copilot coding, cto.new, Amp, Codex):
+1. Attach the plan file as a Linear attachment via `create_attachment`
+2. Include target repo, branch strategy, and acceptance criteria in the issue description
+3. An issue without a plan attachment MUST NOT be delegated
+
+### Verify After Mutate
+
+After any batch of Linear mutations (3+ issues):
+1. Immediately verify by reading back affected issues
+2. Parallelize verification via subagent if >3 issues
+3. Retry once on failure, then flag user
+
+### Revision Trail
+
+Before rewriting a Linear issue description:
+1. Post a comment: `**Description revision [N]**: [summary]. Reason: [context]. Removed: [key content].`
+2. Then perform the update — the comment trail is the audit log
+
 ## Carry-Forward Protocol
 
 When work cannot be completed in the current issue's scope:

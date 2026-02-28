@@ -132,6 +132,12 @@ The Summary section uses plain language. The rest of the plan maintains full tec
 
 Dependencies documented in the References section MUST also be set as actual Linear relations on the issue via `save_issue(id, blockedBy: ["CIA-YYY"])`. This ensures they appear in both the plan AND the Linear sidebar.
 
+## Inline Documentation
+
+Each plan step's definition of done includes the action AND any documentation/Linear updates. Never defer documentation to a separate "Update docs" step — it's part of completing the task. When a step modifies files, the same step updates any affected references (Linear issue ACs, plan document, README if applicable).
+
+> All file references in plans must follow the [Cross-Surface Reference Discipline](../clinearhub-workflow/references/cross-surface-references.md) — hyperlinked, surface-appropriate, never plain text.
+
 ## Checkbox Discipline
 
 Plan tasks use `[ ]` / `[x]` checkboxes. These map bidirectionally with issue acceptance criteria:
@@ -164,8 +170,9 @@ Commands that check for plan documents before starting:
 Before starting work on any issue, agents MUST check for attached context:
 
 1. **Attachments**: `get_attachment(issueId)` — returns URLs, PDFs, screenshots, documents the human added
-2. **Plan documents**: `list_documents(query: "Plan: CIA-XXX")` — promoted session plans
-3. **Comments**: `list_comments(issueId, limit: 20)` — session summaries, review feedback, clarifications
+2. **Multimedia conversion**: For PDF/image/Office/video attachments → `convert_to_markdown(attachment_url)` via MarkItDown MCP. Include converted content in Known State under "Attached Resources". See [cross-surface-references.md](../clinearhub-workflow/references/cross-surface-references.md) for supported types.
+3. **Plan documents**: `list_documents(query: "Plan: CIA-XXX")` — promoted session plans
+4. **Comments**: `list_comments(issueId, limit: 20)` — session summaries, review feedback, clarifications
 
 Humans can add context at any time via:
 

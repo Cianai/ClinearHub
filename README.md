@@ -149,6 +149,7 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 | Execution Modes | quick/tdd/pair/checkpoint/swarm/spike | [`execution-modes.md`](skills/clinearhub-workflow/references/execution-modes.md) |
 | ChatPRD Personas | Working Backwards, Five Whys, Pre-Mortem, Layman Clarity | [`chatprd-personas.md`](skills/spec-enrichment/references/chatprd-personas.md) |
 | PR/FAQ Templates | 4 spec templates (feature, infra, research, quick) | [`prfaq-templates.md`](skills/spec-enrichment/references/prfaq-templates.md) |
+| Cross-Surface References | Link formatting, surface-aware language, multimedia processing | [`cross-surface-references.md`](skills/clinearhub-workflow/references/cross-surface-references.md) |
 | Closure Protocol | Evidence requirements for issue closure | [`closure-protocol.md`](skills/issue-lifecycle/references/closure-protocol.md) |
 | Sentry Pipeline | Sentry↔GitHub↔Linear error pipeline | [`sentry-github-pipeline.md`](skills/incident-response/references/sentry-github-pipeline.md) |
 | PostHog Queries | HogQL patterns, funnel templates | [`posthog-queries.md`](skills/data-analytics/references/posthog-queries.md) |
