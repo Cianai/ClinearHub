@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "linear": {
+      "type": "http",
+      "url": "https://mcp.linear.app/mcp"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp"
+    },
+    "google-calendar": {
+      "type": "http",
+      "url": "https://gcal.mcp.claude.com/mcp"
+    },
+    "gmail": {
+      "type": "http",
+      "url": "https://gmail.mcp.claude.com/mcp"
+    }
+  }
+}

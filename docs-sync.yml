@@ -1,0 +1,36 @@
+# Documentation Sync Manifest
+#
+# Maps plugin reference files to their external targets (Linear UI, Claude Desktop, GitHub).
+# Used by /sync-docs command and CI warning step.
+#
+# Fields:
+#   source: path to the authoritative file in this repo (relative to plugin root)
+#   target: where the content must be manually applied
+#   section: which section of the source file contains the copyable content (between ``` fences)
+#   last_synced: ISO date of last confirmed sync (updated by /sync-docs)
+
+mappings:
+  - source: skills/clinearhub-workflow/references/linear-agent-config.md
+    target: "Linear Settings > Team > Agents > Additional Guidance"
+    section: "Agent Additional Guidance"
+    last_synced: null
+
+  - source: skills/clinearhub-workflow/references/linear-agent-config.md
+    target: "Linear Settings > Preferences > Prompt Template"
+    section: "Prompt Template (v0 Only)"
+    last_synced: null
+
+  - source: skills/clinearhub-workflow/references/cowork-instructions.md
+    target: "Claude Desktop > Settings > Instructions (global)"
+    section: "Cowork Global Instructions"
+    last_synced: null
+
+  - source: skills/clinearhub-workflow/references/cowork-instructions.md
+    target: "Claude Desktop > Project Instructions (Alteri)"
+    section: "Alteri Project Instructions"
+    last_synced: null
+
+  - source: skills/clinearhub-workflow/references/cowork-instructions.md
+    target: "Claude Desktop > Project Instructions (SoilWorx)"
+    section: "SoilWorx Project Instructions"
+    last_synced: null
