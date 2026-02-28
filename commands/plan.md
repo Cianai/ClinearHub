@@ -57,7 +57,25 @@ update_document(
 )
 ```
 
-### Step 5: Backlink
+### Step 5: Validate Attachment
+
+After creating a new document, verify it attached to the issue correctly:
+
+```
+get_issue(issueId, includeRelations: true)
+→ Check issue.documents contains the new document ID
+```
+
+If the document is NOT found in the issue's documents:
+1. Alert the user: "Plan created at wrong level (project instead of issue)."
+2. Read the document content via `get_document`
+3. Create a new document with `issue: "<issue_id>"` parameter
+4. Delete the incorrectly-attached document
+5. Post a comment explaining the recovery
+
+> **API limitation:** `update_document` cannot change a document's attachment (project → issue or vice versa). The only recovery is delete + recreate.
+
+### Step 6: Backlink
 
 ```
 create_comment(
@@ -66,7 +84,7 @@ create_comment(
 )
 ```
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 Output the document URL and linked issue.
 
@@ -97,7 +115,22 @@ list_documents(projectId: "<project_id>", query: "Plan:", limit: 50)
 
 ## Mode: --finalize [CIA-XXX]
 
-Finalize a plan at session end. Replaces `/handoff` — captures decisions, next steps, and outcome summary in the plan document.
+Finalize a plan at session end. Mandatory session close protocol — captures decisions, next steps, and outcome summary. Reports failures and blocks until addressed.
+
+### Session Close Checklist
+
+Run every item. Report failures inline and do NOT skip items.
+
+```
+Session Close Protocol:
+1. [ ] Plan document exists on the issue (verified via get_issue documents array)
+2. [ ] Completed tasks ticked [x] in plan document
+3. [ ] Issue ACs synced with plan tasks (plan checkboxes ↔ issue description ACs)
+4. [ ] Closing comment posted with evidence table
+5. [ ] Context labels updated (remove stale ctx:*, apply new if needed)
+6. [ ] Dependencies set as Linear relations (not just plan references)
+7. [ ] Plan title updated to outcome summary
+```
 
 ### Step 1: Find Plan Document
 
@@ -107,6 +140,8 @@ list_documents(query: "Plan: CIA-XXX", limit: 10)
 
 If `CIA-XXX` not provided, find the most recently updated plan document for In Progress issues.
 
+If NO plan document found: alert the user and offer to run `--promote` first.
+
 ### Step 2: Summarize Session
 
 Compose a session summary:
@@ -115,32 +150,66 @@ Compose a session summary:
 - Open questions or blockers
 - Next steps (in priority order)
 
-### Step 3: Update Plan Document
+### Step 3: Sync ACs
+
+Read both plan document and issue description. Ensure checkboxes are in sync:
+- Plan `[x]` → issue AC should also be `[x]`
+- Any new ACs discovered during session → add to both plan and issue
+
+### Step 4: Update Plan Document
 
 ```
 update_document(
   id: "<doc_id>",
   title: "Plan: CIA-XXX — <outcome summary>",
-  content: <plan with completed tasks ticked and session summary appended>
+  content: <plan with completed tasks ticked, session summary, and revision history entry>
 )
 ```
 
-### Step 4: Update Issue
+### Step 5: Post Evidence Comment
 
-Post a session summary comment on the linked issue:
+Post a closing comment with evidence table:
 
 ```
 create_comment(
   issueId: "<issue_id>",
-  body: "**Session finalized:** <1-2 sentence summary>. Plan: [<plan title>](<doc_url>)"
+  body: "## Session Close — <date>\n\n| Item | Status |\n|------|--------|\n| Plan | [title](url) — updated |\n| ACs synced | Yes |\n| Tasks completed | N/M |\n| Next steps | <1-2 items> |\n\n**Session finalized:** <1-2 sentence summary>"
 )
 ```
 
-### Step 5: Update Context Labels
+### Step 6: Update Context Labels
 
-If the session surface is changing (e.g., switching from interactive to human review):
-- Remove current `ctx:*` label
-- Apply appropriate new `ctx:*` label
+Remove current `ctx:*` label and apply appropriate new `ctx:*` label based on what happens next.
+
+### Step 7: Check Sibling Status (non-PR closures)
+
+If this issue has a parent, check if all siblings are Done:
+
+```
+get_issue(parentId, includeRelations: true)
+→ List all children → count Done vs total
+```
+
+If all siblings Done → post "All sub-issues complete" comment on parent (same as post-merge-reconciliation Phase 8 but for non-PR closures like spikes and manual completions).
+
+### Step 8: Report
+
+Output a summary table of what was done:
+
+```markdown
+## Session Close Report
+
+| Check | Status |
+|-------|--------|
+| Plan exists on issue | ✓ |
+| Tasks ticked [x] | ✓ (N/M) |
+| ACs synced | ✓ |
+| Evidence posted | ✓ |
+| Labels updated | ✓ |
+| Dependencies set | ✓ / N/A |
+| Title updated | ✓ |
+| Sibling check | N/M Done |
+```
 
 ### Connector Tier
 

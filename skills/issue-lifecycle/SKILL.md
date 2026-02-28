@@ -111,7 +111,30 @@ Linear's `update_issue` with `blocks`/`blockedBy`/`relatedTo` **replaces** the e
 - Log every modification
 - Pause between batches for rate limiting
 
+## Session Close Protocol
+
+Every session modifying Linear issues MUST run `/plan --finalize` before ending. The session close protocol ensures no work is lost and all artifacts are properly linked.
+
+See the `/plan --finalize` command for the full 8-step checklist. Key requirements:
+- Plan document exists on the issue
+- Completed tasks ticked `[x]` in both plan document and issue ACs
+- Evidence comment posted
+- Context labels updated
+- Sibling status checked (for non-PR closures)
+
+For PR-based closures, the `post-merge-reconciliation.yml` GitHub Action handles this automatically. The session close protocol covers non-PR closures (spikes, manual completions, Cowork sessions).
+
+## Post-Merge Reconciliation
+
+When a PR merges with "Closes CIA-XXX", the GitHub Action automatically:
+1. **Tier 1**: Ticks ACs, posts evidence comment, updates plan document
+2. **Tier 2**: Checks parent (all siblings Done → Phase 8), updates milestone/initiative
+3. **Tier 3**: Syncs GitHub README and release drafts
+
+This bridges the gap between GitHub merge and Linear issue quality. See `.github/workflows/post-merge-reconciliation.yml`.
+
 ## Cross-Skill References
 
-- **clinearhub-workflow** — Overall flow, where lifecycle fits
+- **clinearhub-workflow** — Overall flow, where lifecycle fits (including Step 4.5 reconciliation)
 - **spec-enrichment** — How specs enter the lifecycle
+- **plan-persistence** — Plan lifecycle and session close protocol details

@@ -27,6 +27,7 @@ Template for promoted plan documents. All sections are required unless marked op
 
 **Issue:** [CIA-XXX: <issue title>](<linear_url>)
 **Session:** <Cowork|Claude Code>, <date>
+**Author:** <ClinearHubBot | Codex | ChatPRD | Copilot | Claude (interactive)>
 **Status:** <In Progress|Complete>
 
 ## Decisions
@@ -84,6 +85,7 @@ Good: "Changes how session plans are saved so they appear directly on the issue 
 
 - **Issue link**: Always a clickable markdown link to the Linear issue
 - **Session surface**: "Cowork" or "Claude Code" — helps future readers understand context
+- **Author**: Which agent or session created the plan. Values: `ClinearHubBot` (automated), `Codex`, `ChatPRD`, `Copilot`, `Claude (interactive)` (human-present Code/Cowork sessions)
 - **Status**: Updated on finalization
 
 ### Decisions

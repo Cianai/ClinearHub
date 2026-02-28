@@ -9,6 +9,8 @@ Write current project state to system surfaces. Distinct from `/stakeholder-upda
 
 **When to use:** After every significant change (feature shipped, milestone hit, deploy completed). Not on a fixed cadence — trigger-driven.
 
+**Automated equivalent:** The `post-merge-reconciliation.yml` GitHub Action performs Tier 2 (milestone/initiative updates) and Tier 3 (README/release draft) automatically on every PR merge. Use `/sync-status` as a manual override for non-PR-merge scenarios (spikes, manual closures, ad-hoc syncs, or when the Action hasn't run yet).
+
 ## Surfaces
 
 | Surface | What Gets Updated | Tool |

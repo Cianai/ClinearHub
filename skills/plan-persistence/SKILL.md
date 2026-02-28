@@ -45,6 +45,15 @@ create_comment(
 
 > Plans attach to **issues** (not projects). For reference documents (architecture, pipeline docs), use `create_document(project: "...")` instead.
 
+After `create_document`, **always validate** the attachment:
+```
+get_issue(issueId, includeRelations: true)
+→ Verify issue.documents contains the new document ID
+```
+If NOT found → the document attached at the wrong level. See "Attachment Immutability Protocol" below.
+
+> **API limitation:** `update_document` cannot change a document's attachment (project → issue or vice versa). Recovery requires delete + recreate.
+
 ### 3. Iterate
 
 Update the document as the plan evolves during the session:
@@ -198,8 +207,49 @@ Each Cowork session should be self-contained:
 - When creating sub-issues mid-session, update the parent's description to reference them
 - Use `create_attachment` to link relevant external resources to issues as needed
 
+## Agent Identity — ClinearHubBot
+
+All automated plan operations should attribute authorship to the correct agent:
+
+| Surface | Attribution Method |
+|---------|-------------------|
+| **Linear comments** | `createAsUser: "ClinearHubBot"` parameter |
+| **Linear attachments** | `createAsUser: "ClinearHubBot"` parameter |
+| **Linear documents** | Author field in plan header (API doesn't support `createAsUser` for documents) |
+| **GitHub Actions** | `post-merge-reconciliation.yml` posts as ClinearHubBot |
+| **GitHub commits** | ClinearHubBot GitHub App identity |
+
+Plan headers include an Author field:
+```markdown
+**Author:** <ClinearHubBot | Codex | ChatPRD | Copilot>
+```
+
+**Proper fix (future):** `actor=app` OAuth mode creates a dedicated Linear agent user. All mutations show agent identity natively. Until configured, the Author field in plan markdown is the workaround for document authorship.
+
+## Attachment Immutability Protocol
+
+`update_document` cannot change a document's issue/project attachment. If a plan is created at the wrong level:
+
+1. `get_document(id)` → read the current content
+2. `create_document(issue: "<correct_issue_id>")` → recreate at issue level with same content
+3. Update the issue description to reference the new document URL
+4. Post a comment on the issue explaining the move
+5. Delete the old document if it causes confusion (optional — Linear preserves history)
+
+**Prevention:** The `/plan --promote` command validates attachment after creation (Step 5). If validation fails, it automatically triggers this recovery protocol.
+
+## Post-Merge Reconciliation
+
+When a PR merges with "Closes CIA-XXX", the `post-merge-reconciliation.yml` GitHub Action automatically:
+- Ticks `[x]` on plan document checkboxes (matching issue AC ticks)
+- Posts evidence comment with quality scoring
+- Checks if all sibling issues are Done → posts on parent (Phase 8)
+- Updates milestone and initiative status if progress changed
+
+For non-PR closures (spikes, manual), `/plan --finalize` performs the same checks as part of its session close protocol.
+
 ## Cross-Skill References
 
-- **clinearhub-workflow** — Overall 6-step flow, where plan persistence fits (Step 1 and 5)
-- **issue-lifecycle** — How plan-linked issues transition through statuses
+- **clinearhub-workflow** — Overall 6-step flow, where plan persistence fits (Step 1 and 5, plus Step 4.5 reconciliation)
+- **issue-lifecycle** — How plan-linked issues transition through statuses, session close protocol
 - **spec-enrichment** — Plans may reference or extend PR/FAQ specs

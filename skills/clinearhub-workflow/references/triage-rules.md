@@ -89,24 +89,24 @@ Sentry-created issues enter Triage automatically via the Linear↔Sentry integra
 | Auto-close parent when all children Done | **OFF** | Phase 8 ChatPRD validation must run before parent closes. `/verify` is the human gate. |
 | Auto-close sub-issues when parent closes | **OFF** | Parent closure should not cascade — children may be in different states. |
 
-## Phase 8: Business Validation Automation
+## Phase 8: Business Validation (Post-Merge Cascade)
 
-After all child sub-issues of a parent spec close:
+After all child sub-issues of a parent spec are merged and Done:
 
-1. **Trigger:** n8n webhook bridge detects all children reach Done status
-2. **Action:** Delegate parent spec issue to ChatPRD (or @mention)
-3. **What ChatPRD does:**
-   - Reviews completed feature against original spec
-   - Verifies business intent alignment and customer outcome
-   - Checks acceptance criteria coverage
-   - Posts validation report as comment on parent issue
-4. **Then:** Human runs `/verify` (Phase 10) to review the synthesized output
+1. **Trigger:** `post-merge-reconciliation.yml` GitHub Action fires on each PR merge. After reconciling the sub-issue (Tier 1), it checks sibling status (Tier 2).
+2. **Detection:** When the last sub-issue's PR merges and all siblings are Done, the Action posts an "All Sub-Issues Complete" comment on the parent issue.
+3. **Human gate:** Human runs `/verify` on the parent to review synthesized outcomes, verify business intent alignment, and close if satisfied.
 
-**Trigger mechanism:** Linear does not natively support "when all children Done" triggers. Triage rules fire only on Triage entry with matching label conditions. Status automations are strictly PR lifecycle (PR→In Progress, merge→Done) and cannot delegate to agents.
+```
+PR merged → Reconciliation Action (Tier 2)
+  → Count sibling statuses
+  → All Done? → Post "All Sub-Issues Complete" on parent
+  → Human reviews via /verify → Close parent if satisfied
+```
 
-**Solution: n8n webhook bridge** (separate issue). n8n workflow listens for Linear webhooks on child issue status changes, checks if all siblings are Done, then delegates the parent to ChatPRD via Linear API.
+**Edge case:** Sub-issues closed without PRs (spikes, manual closures) don't trigger the Action. For these, `/plan --finalize` checks sibling status as part of its session close protocol.
 
-**Interim:** Run `/verify` manually, which checks child status as part of its flow.
+**Previous approach (superseded):** n8n webhook bridge was planned to detect "all children Done" via Linear webhooks. This is no longer needed — the GitHub Action handles the same detection at PR merge time, with full PR context (diff, review comments, CI status).
 
 ## WIP Limits
 

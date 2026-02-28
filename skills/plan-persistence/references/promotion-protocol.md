@@ -73,7 +73,25 @@ update_document(
 
 **Title format:** `Plan: CIA-XXX — <descriptive summary>`
 
-### 6. Backlink
+### 6. Validate Attachment
+
+After creating a new document, verify it attached to the correct issue:
+
+```
+get_issue(issueId, includeRelations: true)
+→ Check issue.documents contains the new document ID
+```
+
+If the document is NOT found in the issue's documents:
+1. Alert: "Plan attached at wrong level — recovering."
+2. `get_document(id)` → read content
+3. `create_document(issue: "<issue_id>")` → recreate at issue level
+4. Delete the incorrectly-attached document
+5. Post a comment explaining the recovery
+
+> `update_document` cannot change attachment. Recovery = delete + recreate.
+
+### 7. Backlink
 
 Post a comment on the issue linking to the plan document:
 
@@ -92,21 +110,23 @@ create_comment(
 )
 ```
 
-## Finalization Protocol
+## Finalization Protocol (Session Close)
 
-At session end, `/plan --finalize` does:
+At session end, `/plan --finalize` runs a mandatory checklist. Reports failures inline.
 
-1. **Summarize session**: What was accomplished, key decisions, next steps
-2. **Update plan content**: Mark completed tasks `[x]`, add session summary
-3. **Rename document**: Change title to reflect outcomes
-   ```
-   update_document(
-     id: "<doc_id>",
-     title: "Plan: CIA-XXX — <outcome summary>"
-   )
-   ```
-4. **Update issue**: Post session summary comment on the linked issue
-5. **Update context labels**: If session surface is changing, swap `ctx:*` labels
+```
+Session Close Protocol:
+1. [ ] Plan document exists on the issue
+2. [ ] Completed tasks ticked [x] in plan document
+3. [ ] Issue ACs synced with plan tasks
+4. [ ] Closing comment posted with evidence table
+5. [ ] Context labels updated
+6. [ ] Dependencies set as Linear relations
+7. [ ] Plan title updated to outcome summary
+8. [ ] Sibling check — if parent exists, check all siblings Done → post on parent
+```
+
+See `/plan --finalize` command for full implementation details.
 
 ## Notes
 

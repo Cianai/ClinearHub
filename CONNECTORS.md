@@ -83,7 +83,7 @@ Configuration lives in the repo's `.github/` directory and GitHub Settings.
 | `.github/instructions/apps.instructions.md` | `apps/**` — app-specific patterns |
 | `.github/instructions/packages.instructions.md` | `packages/**` — shared package patterns |
 
-### Rulesets (applied via claudegbot API)
+### Rulesets (applied via ClinearHubBot API)
 
 | Ruleset | Purpose |
 |---------|---------|
@@ -95,7 +95,8 @@ Configuration lives in the repo's `.github/` directory and GitHub Settings.
 | Workflow | Purpose |
 |---------|---------|
 | `ci.yml` | Lint + typecheck + build on every push/PR |
-| `auto-merge-bots.yml` | Zero-touch loop: bot PR → auto-merge (self-contained, no CCC dependency) |
+| `auto-merge-bots.yml` | Zero-touch loop: bot PR → auto-merge (self-contained) |
+| `post-merge-reconciliation.yml` | **Post-merge 3-tier cascade:** tick ACs, post evidence, update milestone/initiative, sync README/releases |
 | `dependabot-linear.yml` | Bridge Dependabot PRs → Linear issues (majors) + release log |
 | `dependency-monitor.yml` | External repo release monitoring (15-min cron, Atom feeds) |
 
@@ -231,6 +232,7 @@ Inbound (→ Linear):
   Linear Asks (email/Slack) → Linear issues
   GitHub PR merge → Linear issue Done (via "Closes CIA-XXX")
   GitHub PR open → Linear issue In Progress
+  ClinearHubBot → evidence comments, ticked ACs, milestone/initiative updates (post-merge)
 
 Outbound (Linear →):
   spec:draft label → ChatPRD enrichment
@@ -240,6 +242,11 @@ Outbound (Linear →):
 Bidirectional:
   Linear ↔ GitHub (PR comments sync, status transitions)
   Linear ↔ Figma (issue↔design linking)
+
+Agent Identity (ClinearHubBot):
+  GitHub Actions → commits/comments as ClinearHubBot (GitHub App)
+  Linear comments → createAsUser: "ClinearHubBot"
+  Plan documents → Author field in header (API doesn't support createAsUser for docs)
 ```
 
 ### Graceful Degradation

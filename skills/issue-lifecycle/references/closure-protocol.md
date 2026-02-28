@@ -106,6 +106,25 @@ Never mark an implementation issue Done until its PR is merged to main.
 - PR approved does not equal Done
 - Only merged equals Done
 
+## Session Close Checklist
+
+Every session modifying Linear issues runs this checklist at session end (`/plan --finalize`):
+
+```
+1. [ ] Plan document exists on the issue (verified via get_issue documents)
+2. [ ] Completed tasks ticked [x] in plan document
+3. [ ] Issue ACs synced with plan tasks
+4. [ ] Closing comment posted with evidence table
+5. [ ] Context labels updated
+6. [ ] Dependencies set as Linear relations
+7. [ ] Plan title updated to outcome summary
+8. [ ] Sibling check — all siblings Done? → post on parent
+```
+
+Failures are reported inline. The command blocks until addressed.
+
+For PR-based closures, the `post-merge-reconciliation.yml` GitHub Action handles steps 1-8 automatically. This checklist is for non-PR closures (spikes, manual completions, Cowork sessions).
+
 ## Re-Open Protocol
 
 If a closed issue needs re-opening:

@@ -8,11 +8,12 @@ description: |
 
 ClinearHub (Claude + Linear + GitHub) is a Cowork-first PM methodology. Cowork and Linear are the only human-interactive surfaces. Four autonomous agents handle the spec-to-ship loop via Linear triage rules.
 
-## The 6-Step Flow
+## The Pipeline
 
 ```
 1. Ideation (Cowork) → 2. Spec Enrichment (ChatPRD) → 3. Implementation (Codex)
-→ 4. Review + Merge (GitHub) → 5. PM Review (Cowork) → 6. Customer Loop (Cowork)
+→ 4. Review + Merge (GitHub) → 4.5. Reconciliation (ClinearHubBot) → 5. PM Review (Cowork)
+→ 6. Customer Loop (Cowork)
 ```
 
 ### Step 1: Ideation (Cowork)
@@ -49,6 +50,20 @@ GitHub Copilot auto-reviews via `copilot-auto-review` ruleset. CI runs. Auto-mer
 
 **Zero-touch loop:** Push → PR → Copilot review → CI → Auto-merge → Linear auto-close (via `Closes CIA-XXX`).
 
+### Step 4.5: Reconciliation (ClinearHubBot)
+
+Fully automated — no human interaction. The `post-merge-reconciliation.yml` GitHub Action fires on PR merge and runs a 3-tier cascade:
+
+| Tier | What | When |
+|------|------|------|
+| **1: Issue Reconciliation** | Tick [x] ACs on issue + plan, post evidence comment with quality scoring | Always |
+| **2: Parent & Project Cascade** | Check all siblings Done → post on parent (Phase 8), update milestone/initiative progress | If parent/milestone exists |
+| **3: Documentation Sync** | Update GitHub README CLH section, append to release draft | If CLH markers exist |
+
+This bridges the gap between GitHub merge and Linear issue quality. Without reconciliation, `Closes CIA-XXX` only changes status to Done — ACs remain unticked, no evidence is posted, and parent issues don't know their children are complete.
+
+For non-PR closures (spikes, manual completions), `/plan --finalize` performs the same checks as part of its session close protocol.
+
 ### Step 5: PM Review (Cowork)
 
 Human reviews completed work in Cowork. Checks PostHog analytics, Vercel deploy preview, Sentry error rates.
@@ -63,14 +78,19 @@ Communicate outcomes to customers via Linear Customer Requests, Notion CRM updat
 
 ## Agent Pipeline
 
-| Agent | Trigger | Input | Output |
-|-------|---------|-------|--------|
-| ChatPRD | `spec:draft` label | Issue with problem statement | Enriched spec + sub-issues with `auto:implement` |
-| Codex | `auto:implement` label | Sub-issue with AC | Branch + PR with `Closes CIA-XXX` |
-| Copilot | PR opened | PR diff | Review comments, approval |
-| Sentry | Production error | Error event | Linear issue with stack trace |
+| Agent | Surface | Trigger | Input | Output |
+|-------|---------|---------|-------|--------|
+| ChatPRD | Linear | `spec:draft` label | Issue with problem statement | Enriched spec + sub-issues with `auto:implement` |
+| Codex | Linear | `auto:implement` label | Sub-issue with ACs | Branch + PR with `Closes CIA-XXX` |
+| Copilot | GitHub | PR opened | PR diff | Review comments, approval |
+| ClinearHubBot | GitHub | PR merged | PR + Linear issue | Evidence comment, ticked ACs, project cascade |
+| Sentry | Sentry | Production error | Error event | Linear issue with stack trace |
 
-**Dispatch mechanism:** Linear triage rules (Settings > Team > Triage). Not plugin-driven — the plugin documents the methodology, Linear executes the dispatch.
+**Dispatch mechanisms:**
+- **ChatPRD + Codex:** Linear triage rules (Settings > Team > Triage)
+- **Copilot:** GitHub `copilot-auto-review` ruleset
+- **ClinearHubBot:** `post-merge-reconciliation.yml` GitHub Action
+- **Sentry:** Sentry → Linear native integration
 
 ## Triage Protocol
 
@@ -135,4 +155,5 @@ Before creating any issue, search Linear for existing coverage:
 ## Cross-Skill References
 
 - **spec-enrichment** — Governs Step 2 (PR/FAQ templates, ChatPRD personas, AC writing)
-- **issue-lifecycle** — Governs status transitions, closure, ownership boundaries
+- **issue-lifecycle** — Governs status transitions, closure, session close protocol
+- **plan-persistence** — Governs plan lifecycle, Step 4.5 reconciliation, agent identity
