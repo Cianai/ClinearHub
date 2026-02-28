@@ -11,6 +11,22 @@ CLH-native 6-step protocol for promoting session plans to Linear Documents.
 | **Cowork** | Summarize conversation context into plan markdown. Include: decisions made, scope agreed, tasks identified, verification criteria. |
 | **Code** | Read from `~/.claude/plans/<plan-file>.md`. If no plan file exists, compose from session context. |
 
+### 1.5 Canonical Plan File Naming (Code Sessions Only)
+
+If the local plan file has an auto-generated name (e.g., `tingly-leaping-hippo.md`), copy it to a canonical name before promoting:
+
+```bash
+cp ~/.claude/plans/<auto-name>.md ~/.claude/plans/CIA-XXX-<slug>.md
+```
+
+**Naming convention:** `CIA-XXX-<short-descriptive-slug>.md`
+- Examples: `CIA-784-plan-persistence-v2.md`, `CIA-800-multi-surface-review.md`
+- The auto-generated file stays (Claude Code references it), but the canonical copy has a human-readable name
+
+**For Cowork sessions:** Skip this step — no filesystem access. The Linear Document is the only artifact.
+
+**For subagent plan files:** Do NOT rename. They are ephemeral. Their content flows into the main plan (see "Subagent Work Product Capture" in plan-persistence SKILL.md).
+
 ### 2. Resolve Target Issue
 
 - If `--promote CIA-XXX` argument provided, use that issue
@@ -109,6 +125,18 @@ create_comment(
   body: "Plan updated: [Plan: CIA-XXX — <summary>](<document_url>) — v<N>: <change summary>"
 )
 ```
+
+### 7.5 Update Plan Index (Code Sessions Only)
+
+Append a row to `~/.claude/plans/INDEX.md` (create the file if it doesn't exist):
+
+```markdown
+| CIA-XXX | [Plan: CIA-XXX — <summary>](<doc_url>) | CIA-XXX-<slug>.md | <date> | In Progress |
+```
+
+The INDEX.md file is a local discovery tool — any session can read it to find plans by issue. It is NOT promoted to Linear (Linear Documents are discoverable via `list_documents`).
+
+**For Cowork sessions:** Skip — no filesystem access. Discovery happens via `list_documents(query: "Plan:")`.
 
 ## Finalization Protocol (Session Close)
 

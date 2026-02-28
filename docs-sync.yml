@@ -13,24 +13,34 @@ mappings:
   - source: skills/clinearhub-workflow/references/linear-agent-config.md
     target: "Linear Settings > Team > Agents > Additional Guidance"
     section: "Agent Additional Guidance"
-    last_synced: null
+    last_synced: 2026-02-28
 
   - source: skills/clinearhub-workflow/references/linear-agent-config.md
     target: "Linear Settings > Preferences > Prompt Template"
     section: "Prompt Template (v0 Only)"
-    last_synced: null
+    last_synced: 2026-02-28
 
   - source: skills/clinearhub-workflow/references/cowork-instructions.md
-    target: "Claude Desktop > Settings > Instructions (global)"
+    target: "Claude Desktop > Settings > Cowork > Instructions (global)"
     section: "Cowork Global Instructions"
-    last_synced: null
+    last_synced: 2026-02-28
 
   - source: skills/clinearhub-workflow/references/cowork-instructions.md
     target: "Claude Desktop > Project Instructions (Alteri)"
     section: "Alteri Project Instructions"
-    last_synced: null
+    last_synced: 2026-02-28
 
   - source: skills/clinearhub-workflow/references/cowork-instructions.md
     target: "Claude Desktop > Project Instructions (SoilWorx)"
     section: "SoilWorx Project Instructions"
+    last_synced: 2026-02-28
+
+  - source: ../../CHANGELOG.md
+    target: "GitHub Releases > Latest Release body"
+    section: "Latest Release"
+    last_synced: null
+
+  - source: README.md
+    target: "GitHub Public Repo (Cianai/ClinearHub) > README.md"
+    section: "Full README"
     last_synced: null

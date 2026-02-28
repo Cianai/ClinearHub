@@ -8,6 +8,7 @@ Template for promoted plan documents. All sections are required unless marked op
 |---------|----------|---------|
 | **Summary** | Yes | 2-3 sentence plain-language overview for non-technical reviewers |
 | **Header** | Yes | Issue link, session surface, status |
+| **Identifiers** | Yes | Lineage chain: Linear Document, local plan file, session, branch, subagent plans |
 | **Decisions** | Yes | Key choices made (for future reference) |
 | **Scope** | Yes | What this plan covers |
 | **Non-Goals** | Yes | What's explicitly excluded |
@@ -26,9 +27,19 @@ Template for promoted plan documents. All sections are required unless marked op
 <2-3 sentences in plain language explaining what this plan does, why it matters, and what changes. No jargon. A non-technical stakeholder should understand the purpose from this section alone.>
 
 **Issue:** [CIA-XXX: <issue title>](<linear_url>)
-**Session:** <Cowork|Claude Code>, <date>
+**Session:** <Cowork|Claude Code|VS Code>, <date>
 **Author:** <ClinearHubBot | Codex | ChatPRD | Copilot | Claude (interactive)>
 **Status:** <In Progress|Complete>
+
+## Identifiers
+
+| Key | Value |
+|-----|-------|
+| **Linear Document** | [Plan: CIA-XXX — summary](<linear_doc_url>) |
+| **Local Plan** | `~/.claude/plans/CIA-XXX-<slug>.md` |
+| **Session** | `<session-name or auto-generated ID>` |
+| **Branch** | `CIA-XXX-<short-slug>` |
+| **Subagent Plans** | `CIA-XXX-<slug>-agent-*.md` (N files) or — |
 
 ## Decisions
 
@@ -87,6 +98,18 @@ Good: "Changes how session plans are saved so they appear directly on the issue 
 - **Session surface**: "Cowork" or "Claude Code" — helps future readers understand context
 - **Author**: Which agent or session created the plan. Values: `ClinearHubBot` (automated), `Codex`, `ChatPRD`, `Copilot`, `Claude (interactive)` (human-present Code/Cowork sessions)
 - **Status**: Updated on finalization
+
+### Identifiers
+
+The lineage chain connecting the promoted Linear Document back to its source artifacts. Enables any surface to trace a plan's origin:
+
+- **Linear Document**: URL of the promoted document (filled after `/plan --promote`)
+- **Local Plan**: Path to the canonical local plan file. Use `CIA-XXX-slug.md` naming — see promotion protocol Step 1.5
+- **Session**: Human-readable session name (via `/rename`) or auto-generated ID. Helps locate the conversation that produced the plan
+- **Branch**: Git branch associated with implementation work. Format: `CIA-XXX-short-slug`
+- **Subagent Plans**: List of subagent plan files that contributed research/analysis to this plan. Use `—` if no subagents were involved
+
+For Cowork-originated plans (no filesystem), only **Linear Document** and **Session** apply. Local Plan, Branch, and Subagent Plans are `—`.
 
 ### Decisions
 

@@ -190,6 +190,56 @@ Custom output styles can be created at `.claude/output-styles/`. ClinearHub ship
 
 **Critical**: Output styles affect presentation, NOT technical content. The PM Review style adds explanatory context AROUND the same decisions. Agents always consume the canonical plan document (full technical detail in Linear), regardless of which style a human used to review it.
 
+## Session Start Protocol
+
+Before starting work, auto-recover full context from Linear. Replaces manual screenshot pasting — Linear IS the context store.
+
+### Scope Resolution
+
+The protocol handles multiple issues across multiple projects. Scope is determined by:
+
+1. **User specifies issues**: `/plan --review CIA-XXX CIA-YYY` — explicit issue list
+2. **User specifies project**: Read active issues from project (`list_issues(project: "...", state: "In Progress", limit: 10)`)
+3. **Folder context (Cowork)**: When user selects a repo folder in Cowork, infer the project from `CLAUDE.md` or `package.json` name → map to Linear project
+4. **Default**: Current In Progress issues assigned to the user/agent
+
+### Per-Issue Context Recovery
+
+For each issue in scope:
+
+1. `get_issue(issueId, includeRelations: true)` — status, ACs, labels, relations, blocking/blocked-by
+2. `list_comments(issueId, limit: 10)` — session summaries, review feedback, agent evidence
+3. `list_documents(query: "Plan: CIA-XXX", limit: 5)` — promoted plans (read the most recent)
+4. `get_attachment(issueId)` — human-added screenshots, PDFs, images, agent-added resources
+5. `get_issue(parentId, includeRelations: true)` — parent state + sibling status (if child issue)
+
+### Output Format
+
+Present a "Known State" section at top of session:
+
+```markdown
+## Known State
+
+### Issues
+| Issue | Status | Labels | Assignee | Milestone | Priority | Blocking | Blocked By |
+|-------|--------|--------|----------|-----------|----------|----------|------------|
+| [CIA-XXX: Title](url) | In Progress | ctx:interactive | Claude | M1 | High | — | CIA-YYY |
+
+### Last Session Summary
+<From most recent closing comment per issue>
+
+### Active Plan
+<Title + task completion summary from most recent plan document per issue>
+
+### Attached Resources
+<List of attachments, linked docs, external links — both human-added and agent-added>
+
+### Cross-Issue Blocking Graph
+<If any blocking relations exist between scoped issues — show as dependency chain>
+```
+
+**Scalability:** For projects with many issues, scope to In Progress issues only (not the full backlog). The `limit: 10` on `list_issues` prevents unbounded reads. For cross-project sessions, the user specifies which projects/issues are in scope.
+
 ## Session Model: Closed-Loop Cowork
 
 Each Cowork session should be self-contained:
@@ -247,6 +297,21 @@ When a PR merges with "Closes CIA-XXX", the `post-merge-reconciliation.yml` GitH
 - Updates milestone and initiative status if progress changed
 
 For non-PR closures (spikes, manual), `/plan --finalize` performs the same checks as part of its session close protocol.
+
+## Subagent Work Product Capture (Code Sessions Only)
+
+When a Code session spawns subagents via the Task tool:
+
+1. The main session MUST extract key findings from each subagent's return value
+2. Append findings to the active plan under a `## Research: <topic>` section
+3. If a subagent wrote to a plan file (`*-agent-*.md`), read it and merge into the main plan
+4. After merging, the subagent plan file is ephemeral — do not reference it from Linear
+
+Subagent plan files (`*-agent-*.md`) must NOT be referenced from Linear Documents. Their content must flow into either:
+- The main session plan file (for ongoing Code work)
+- The promoted Linear Document (for cross-surface visibility)
+
+This does not apply to Cowork sessions. Cowork's internal sub-agents are system-managed and do not produce separate plan files.
 
 ## Cross-Skill References
 

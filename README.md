@@ -64,7 +64,7 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 | `/analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
 | `/verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
 | `/sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
-| `/plan` | Manage session plans — promote to Linear Documents, list plans, finalize at session end |
+| `/plan` | Manage session plans — promote, review, list, index, finalize |
 | `/roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
 | `/sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
 
@@ -156,6 +156,7 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 | Railway Checks | Railway deployment verification | [`railway-checks.md`](skills/deployment-verification/references/railway-checks.md) |
 | Plan Format | Plan document template and conventions | [`plan-format.md`](skills/plan-persistence/references/plan-format.md) |
 | Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/plan-persistence/references/promotion-protocol.md) |
+| Multi-Surface Review | Cross-surface plan review chain (Cowork → Code → IDE) | [`multi-surface-review.md`](skills/plan-persistence/references/multi-surface-review.md) |
 | Initiative Patterns | Initiative + Milestone management templates | [`initiative-patterns.md`](skills/roadmap-management/references/initiative-patterns.md) |
 | Docs Sync Manifest | Source-target documentation sync | [`docs-sync.yml`](docs-sync.yml) |
 

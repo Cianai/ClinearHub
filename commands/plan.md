@@ -1,11 +1,11 @@
 ---
-description: Manage session plans — promote to Linear Documents, list promoted plans, finalize at session end
-argument-hint: "<--promote [CIA-XXX] | --list [--project <name>] | --finalize [CIA-XXX]>"
+description: Manage session plans — promote to Linear Documents, review plans, list promoted plans, finalize at session end
+argument-hint: "<--promote [CIA-XXX] | --review [CIA-XXX] | --list [--project <name>] | --index | --finalize [CIA-XXX]>"
 ---
 
 # Plan
 
-Manage ClinearHub plans: promote session plans to durable Linear Documents, list existing plans, and finalize plans at session end.
+Manage ClinearHub plans: promote session plans to durable Linear Documents, review plans from any surface, list existing plans, and finalize plans at session end.
 
 ## Mode: --promote [CIA-XXX]
 
@@ -16,6 +16,18 @@ Create or update a Linear Document linked to an issue.
 **Cowork:** Summarize the current conversation into plan format (see plan-persistence skill for template). Include: decisions made, scope, tasks with `[ ]` checkboxes, verification criteria.
 
 **Code:** Check for a plan file in `~/.claude/plans/`. If found, read it. If not, compose from session context.
+
+### Step 1.5: Canonical Plan File Naming (Code Sessions Only)
+
+If the local plan file has an auto-generated name (e.g., `tingly-leaping-hippo.md`), copy it to a canonical name:
+
+```bash
+cp ~/.claude/plans/<auto-name>.md ~/.claude/plans/CIA-XXX-<slug>.md
+```
+
+**Naming convention:** `CIA-XXX-<short-descriptive-slug>.md`
+
+The auto-generated file stays (Claude Code references it), but the canonical copy has a human-readable name. For Cowork sessions, skip this step — no filesystem access.
 
 ### Step 2: Resolve Target Issue
 
@@ -84,7 +96,17 @@ create_comment(
 )
 ```
 
-### Step 7: Confirm
+### Step 7.5: Update Plan Index (Code Sessions Only)
+
+Append a row to `~/.claude/plans/INDEX.md` (create if it doesn't exist):
+
+```markdown
+| CIA-XXX | [Plan: CIA-XXX — <summary>](<doc_url>) | CIA-XXX-<slug>.md | <date> | In Progress |
+```
+
+For Cowork sessions, skip — no filesystem access. Discovery happens via `list_documents(query: "Plan:")`.
+
+### Step 8: Confirm
 
 Output the document URL and linked issue.
 
@@ -112,6 +134,81 @@ list_documents(projectId: "<project_id>", query: "Plan:", limit: 50)
 |------|-------|---------|---------|
 | [Plan: CIA-XXX — Summary](url) | [CIA-XXX](url) | ProjectName | 2026-02-28 |
 ```
+
+## Mode: --review [CIA-XXX]
+
+Read and display a promoted plan for review, with inline status. Works from both Cowork and Code — the primary mechanism for cross-surface plan review.
+
+### Step 1: Find Plan Document
+
+```
+list_documents(query: "Plan: CIA-XXX", limit: 5)
+```
+
+If `CIA-XXX` not provided, find the most recently updated plan for In Progress issues.
+
+### Step 2: Read Plan and Issue State
+
+```
+get_document(id: "<doc_id>")
+get_issue(issueId, includeRelations: true)
+```
+
+### Step 3: Display Plan with Status
+
+Render the plan with inline status overlay:
+
+```markdown
+## Plan Review: CIA-XXX — <summary>
+
+**Issue:** [CIA-XXX: <title>](<url>) — <status>
+**Last updated:** <date> (<time since last update>)
+**Blocking:** <blocking issues or "None">
+
+### Tasks
+- [x] <completed task>
+- [ ] <pending task> ← next
+- [ ] <pending task>
+
+### Progress: N/M tasks complete
+```
+
+### Step 4: Offer Actions
+
+Present options for the user:
+- **(a) Update this plan** — modify content via `update_document`
+- **(b) Add a comment** — post feedback on the issue via `create_comment`
+- **(c) Finalize it** — run `--finalize` flow
+- **(d) Continue reviewing** — no action, plan displayed for reference
+
+> **Multi-surface usage:** In Cowork, this reads a plan created in Code (or vice versa). In Code, pair with `/output-style pm-review` for non-technical explanation. From Code, "Continue in" → VS Code/Cursor for line-by-line editing.
+
+## Mode: --index
+
+Display the local plan index showing all promoted plans with their lineage. Code sessions only.
+
+### Step 1: Read INDEX.md
+
+```
+Read ~/.claude/plans/INDEX.md
+```
+
+If the file doesn't exist, output: "No plan index found. Run `/plan --promote` to create the first entry."
+
+### Step 2: Display
+
+Format as table with status indicators:
+
+```markdown
+## Plan Index
+
+| Issue | Linear Document | Local File | Date | Status |
+|-------|----------------|------------|------|--------|
+| CIA-784 | [Plan: CIA-784 — ...](url) | CIA-784-plan-persistence-v2.md | 2026-02-28 | Complete |
+| CIA-XXX | [Plan: CIA-XXX — ...](url) | CIA-XXX-slug.md | 2026-02-28 | In Progress |
+```
+
+> **Cowork alternative:** Use `--list` instead — it queries Linear Documents directly. `--index` reads the local filesystem which is only available in Code sessions.
 
 ## Mode: --finalize [CIA-XXX]
 
