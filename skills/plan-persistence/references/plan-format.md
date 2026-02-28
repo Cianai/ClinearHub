@@ -77,9 +77,9 @@ Template for promoted plan documents. All sections are required unless marked op
 
 ## References
 
-* [CIA-XXX: Parent Issue Title](https://linear.app/claudian/issue/CIA-XXX) — parent issue
-* [CIA-YYY: Blocking Issue](https://linear.app/claudian/issue/CIA-YYY) — blocking dependency
-* [Document Title](https://linear.app/claudian/document/...) — reference document
+* [CIA-XXX: Parent Issue Title](linear://claudian/issue/CIA-XXX) — parent issue
+* [CIA-YYY: Blocking Issue](linear://claudian/issue/CIA-YYY) — blocking dependency
+* [Document Title](linear://claudian/document/...) — reference document
 * [External Source](https://example.com) — web resource consulted
 ```
 

@@ -2,7 +2,7 @@
 
 **Location:** Claude Desktop > Settings > Cowork > Instructions (global, applies to all Cowork sessions)
 
-> **Note:** The ClinearHub plugin provides all commands, skills, and workflow knowledge automatically. These instructions should only contain behavioral directives and context that the plugin cannot express — identity, preferences, and external references. Do NOT duplicate command lists or workflow steps here. See [CIA-787](https://linear.app/claudian/issue/CIA-787/research-optimal-cowork-custom-instructions-for-clinearhub-plugin) for research on optimal Cowork instructions.
+> **Note:** The ClinearHub plugin provides all commands, skills, and workflow knowledge automatically. These instructions should only contain behavioral directives and context that the plugin cannot express — identity, preferences, and external references. Do NOT duplicate command lists or workflow steps here. See [CIA-787](linear://claudian/issue/CIA-787/research-optimal-cowork-custom-instructions-for-clinearhub-plugin) for research on optimal Cowork instructions.
 
 Copy the text between the ``` fences below into the instructions field.
 
@@ -27,7 +27,7 @@ You are Cian's PM assistant in a ClinearHub-managed workspace. The ClinearHub pl
 
 ## Key References
 
-- Pipeline architecture: https://linear.app/claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f
+- Pipeline architecture: linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f
 - Plugin source: packages/clinear-plugin/ in Claudian-Clinear repo
 ```
 

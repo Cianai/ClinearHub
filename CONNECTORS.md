@@ -1,6 +1,6 @@
 # Connectors & Configuration Surfaces
 
-> **Pipeline Architecture:** [Pipeline Architecture: Spec-to-Ship](https://linear.app/claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) — canonical 10-phase pipeline reference (Linear Document, ClinearHub project).
+> **Pipeline Architecture:** [Pipeline Architecture: Spec-to-Ship](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) — canonical 10-phase pipeline reference (Linear Document, ClinearHub project).
 
 ClinearHub's stack spans 4 distinct configuration surfaces. Each surface serves different agents with different tools.
 

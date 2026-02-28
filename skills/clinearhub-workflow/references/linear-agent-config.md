@@ -75,7 +75,7 @@ ClinearHub is a spec-to-ship pipeline. Each agent has a specific phase:
 - Sentry Agent: Ongoing (error analysis, root cause). When assigned a Sentry-created issue, analyze the stack trace, identify the root cause, and suggest a fix.
 - Factory / Cto.new: Phase 4 (background implementation). Same rules as Codex.
 
-Full pipeline reference: https://linear.app/claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f
+Full pipeline reference: linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f
 
 ## Labels (apply to every issue)
 

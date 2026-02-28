@@ -140,7 +140,7 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 
 | Reference | What | Link |
 |-----------|------|------|
-| Pipeline Architecture | Canonical 10-phase spec-to-ship pipeline | [Linear Document](https://linear.app/claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) |
+| Pipeline Architecture | Canonical 10-phase spec-to-ship pipeline | [Linear Document](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) |
 | CONNECTORS.md | 4-surface configuration guide | [CONNECTORS.md](CONNECTORS.md) |
 | Agent Guidance | Text for Linear Settings > Team > Agents | [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md) |
 | Cowork Instructions | Text for Claude Desktop > Settings > Instructions | [`cowork-instructions.md`](skills/clinearhub-workflow/references/cowork-instructions.md) |
