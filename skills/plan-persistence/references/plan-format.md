@@ -2,10 +2,28 @@
 
 Template for promoted plan documents. All sections are required unless marked optional.
 
+## Required Sections
+
+| Section | Required | Purpose |
+|---------|----------|---------|
+| **Summary** | Yes | 2-3 sentence plain-language overview for non-technical reviewers |
+| **Header** | Yes | Issue link, session surface, status |
+| **Decisions** | Yes | Key choices made (for future reference) |
+| **Scope** | Yes | What this plan covers |
+| **Non-Goals** | Yes | What's explicitly excluded |
+| **Tasks** | Yes | `[ ]` checkbox items — map to issue ACs |
+| **Verification** | Yes | How to confirm the plan succeeded |
+| **Revision History** | Yes | Dated entries tracking plan evolution |
+| **References** | Yes | Hyperlinked Linear items, web sources, documents cited |
+
 ## Template
 
 ```markdown
 # <Plan Title>
+
+## Summary
+
+<2-3 sentences in plain language explaining what this plan does, why it matters, and what changes. No jargon. A non-technical stakeholder should understand the purpose from this section alone.>
 
 **Issue:** [CIA-XXX: <issue title>](<linear_url>)
 **Session:** <Cowork|Claude Code>, <date>
@@ -44,9 +62,23 @@ Template for promoted plan documents. All sections are required unless marked op
 ## Revision History
 
 * **v1 (<date>)**: <Initial plan summary>
+
+## References
+
+* [CIA-XXX: Parent Issue Title](https://linear.app/claudian/issue/CIA-XXX) — parent issue
+* [CIA-YYY: Blocking Issue](https://linear.app/claudian/issue/CIA-YYY) — blocking dependency
+* [Document Title](https://linear.app/claudian/document/...) — reference document
+* [External Source](https://example.com) — web resource consulted
 ```
 
 ## Section Guidelines
+
+### Summary
+
+Plain language only. No technical jargon. A PM or stakeholder should understand what this plan accomplishes from this section alone. Think of it as an email subject line expanded to 2-3 sentences.
+
+Bad: "Refactors the plan-persistence SKILL.md to use issue-level create_document with Linear MCP attachment parameters"
+Good: "Changes how session plans are saved so they appear directly on the issue they belong to, instead of cluttering the project's document list. Also adds a references section to every plan so reviewers can click through to related items."
 
 ### Header
 
@@ -82,6 +114,26 @@ Concrete, observable criteria. Not "verify it works" but "17 commands listed in 
 ### Revision History
 
 Append-only. Each entry: version number, date, and 1-sentence summary of what changed. Never remove or rewrite previous entries.
+
+### References
+
+Every item referenced in the plan — Linear issues, Linear documents, web pages, GitHub resources — listed with clickable hyperlinks. Dependencies documented here MUST also be set as actual Linear relations on the issue:
+
+1. Document in `## References` (for human reading in the plan)
+2. Set via `save_issue(id, blockedBy: ["CIA-YYY"])` (for Linear sidebar visibility)
+
+This ensures dependencies appear in BOTH the plan document AND the Linear issue sidebar.
+
+## Hyperlink Rules
+
+Every plan MUST hyperlink:
+- **Linear issues**: `[CIA-XXX: Title](linear_url)` — never bare CIA-XXX
+- **Linear documents**: `[Doc title](linear_doc_url)` — never bare doc names
+- **Web sources**: `[Page title](url)` — any external page referenced
+- **GitHub resources**: `[PR/issue title](github_url)` — PRs, issues, files
+- **MCP tool references**: backtick formatting `create_document` (no link needed)
+
+Purpose: Humans review plans by clicking through references. Every reference must be one click away.
 
 ## Title Convention
 

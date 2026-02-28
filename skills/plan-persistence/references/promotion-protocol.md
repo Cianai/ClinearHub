@@ -23,15 +23,17 @@ get_issue(id: "CIA-XXX", includeRelations: true)
 
 Verify the issue exists and is in an active state (Todo, In Progress, In Review).
 
-### 3. Determine Project
+### 3. Resolve Project Context
 
-Read the project from the issue's project field. Plans attach to the same project as their linked issue.
+Read the project from the issue's project field. The project is used for context and logging — NOT for `create_document` (plans attach to issues, not projects). Project is used for: confirming the user is working in the right project, log output, and routing reference docs.
 
 ```
-# Project comes from the issue metadata
+# Project comes from the issue metadata (for context only)
 project_id = issue.project.id
 project_name = issue.project.name
 ```
+
+> For reference documents that should persist at project level (architecture docs, pipeline docs), use `create_document(project: "...")` instead. Plans are issue-scoped; reference docs are project-scoped.
 
 ### 4. Check for Existing Plan Document
 
@@ -55,9 +57,11 @@ If no matching document:
 create_document(
   title: "Plan: CIA-XXX — <summary>",
   content: <plan markdown>,
-  project: "<project_name>"
+  issue: "<issue_id>"
 )
 ```
+
+> Plans appear in the issue's Resources section in Linear UI, alongside PR links and attachments.
 
 **Existing document:**
 ```
@@ -108,4 +112,5 @@ At session end, `/plan --finalize` does:
 
 - Linear Documents are the single source of truth. No `.ccc-state.json` or filesystem markers.
 - Linear Documents have built-in revision history visible in the UI. The `## Revision History` section in the document content provides human-readable change summaries in addition to Linear's built-in versioning.
-- Plans are NOT attached to issues via the document `issue` field (API rejects dual project+issue attachment). Instead, linking is done via comments and title convention.
+- Plans attach to issues via `create_document(issue: "<issue_id>")`. Reference docs attach to projects via `create_document(project: "...")`. The Linear API rejects dual project+issue attachment — pick one per document.
+- Agents always check for attachments on issues via `get_attachment` before starting work. Human-added context (PDFs, screenshots, links) is discovered automatically — no prompting needed.

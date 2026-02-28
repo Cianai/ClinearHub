@@ -43,9 +43,11 @@ If not found: create a new document.
 create_document(
   title: "Plan: CIA-XXX — <summary>",
   content: <plan markdown>,
-  project: "<project name from issue>"
+  issue: "<issue_id>"
 )
 ```
+
+> Plans attach to issues (not projects). The plan appears in the issue's Resources section. For reference documents that should persist at project level (architecture docs, pipeline docs), use `create_document(project: "...")` instead.
 
 **Update:**
 ```

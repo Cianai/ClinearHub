@@ -42,6 +42,9 @@ Use these slash commands to trigger workflows:
 - /plan — Manage session plans: promote to Linear Documents, list plans, finalize at session end
 - /roadmap-update — View, update, and manage strategic roadmap via Linear Initiatives and Milestones
 - /sync-status — Mechanical cross-surface status sync to Linear + GitHub
+- /sync-docs — Check and sync plugin reference files with external targets
+
+> **For non-technical reviewers**: Plans include a plain-language Summary section at the top. For deeper explanation of any plan, open it in Claude Code with the "Explanatory" output style selected.
 
 ## Conventions
 
