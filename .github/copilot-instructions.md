@@ -8,12 +8,37 @@ ClinearHub (Claude + Linear + GitHub) is a Cowork-first PM methodology plugin fo
 - **License:** Apache-2.0
 - **Plugin version:** Defined in `.claude-plugin/plugin.json`
 
+## Development Flow
+
+There is no build step, no compilation, and no package manager. The only validation is:
+
+```bash
+bash scripts/validate-plugin.sh
+```
+
+Always run this from the repo root after making any changes. The validator requires `bash` and `python3` (both available by default in GitHub Actions runners).
+
+### What the Validator Checks
+
+1. `plugin.json` has required fields (`name`, `version`, `description`) and valid semver version
+2. Every skill directory has a `SKILL.md` with required frontmatter (`name`, `description`)
+3. Skill frontmatter `name` matches directory name
+4. No legacy `commands/` directory files
+5. `.mcp.json` is valid JSON with `mcpServers` key
+6. All `${CLAUDE_PLUGIN_ROOT}` path references in SKILL.md files resolve to existing files
+
+### Known Validator Issue
+
+The validator currently reports one pre-existing error: a broken `${CLAUDE_PLUGIN_ROOT}` reference in `skills/discovery-digest/SKILL.md` pointing to `../../.github/monitored-repos.yml` (file does not exist yet). This is not a regression from your changes.
+
 ## Project Layout
 
 ```
 ClinearHub/
 ├── .claude-plugin/
 │   └── plugin.json          # Plugin metadata (name, version, description)
+├── .github/
+│   └── copilot-instructions.md  # This file — Copilot coding agent instructions
 ├── .mcp.json                # MCP server config (intentionally empty — no bundled connectors)
 ├── skills/                  # 27 skill directories (core of the plugin)
 │   ├── <skill-name>/
@@ -29,12 +54,12 @@ ClinearHub/
 └── LICENSE                  # Apache-2.0
 ```
 
-### Skill Directory Convention
+## Skill Directory Convention
 
 Each skill lives in `skills/<skill-name>/` and **must** contain a `SKILL.md` file with:
 
 1. YAML frontmatter between `---` fences containing `name:` and `description:` fields
-2. The `name:` field must match the directory name
+2. The `name:` field must match the directory name exactly
 3. A non-empty Markdown body after the frontmatter
 
 Skills may optionally have a `references/` subdirectory with supporting `.md` files.
@@ -44,23 +69,17 @@ There are three skill types:
 - **Action skills** (15): User-invoked via `/clinearhub:<name>` (e.g., `write-spec`, `triage`)
 - **Query skills** (2): Auto-invocable by model (e.g., `update`, `standup`)
 
-## Validation
+### Adding a New Skill
 
-The only validation script is `scripts/validate-plugin.sh`. Always run it from the repo root after making changes:
+1. Create `skills/<name>/` directory (lowercase with hyphens)
+2. Create `skills/<name>/SKILL.md` with YAML frontmatter where `name:` matches the directory name
+3. Add a non-empty Markdown body after the frontmatter
+4. Optionally add a `references/` subdirectory with supporting `.md` files
+5. Run `bash scripts/validate-plugin.sh` to verify
 
-```bash
-bash scripts/validate-plugin.sh
-```
+### Editing Reference Files
 
-This script checks:
-1. `plugin.json` has required fields (`name`, `version`, `description`) and valid semver version
-2. Every skill directory has a `SKILL.md` with required frontmatter (`name`, `description`)
-3. Skill frontmatter `name` matches directory name
-4. No legacy `commands/` directory files
-5. `.mcp.json` is valid JSON with `mcpServers` key
-6. All `${CLAUDE_PLUGIN_ROOT}` path references in SKILL.md files resolve to existing files
-
-There is no build step, no compilation, no package manager, and no test suite beyond this validator.
+Check `docs-sync.yml` to see if the file maps to an external sync target. If it does, the external target may need manual syncing after your change.
 
 ## Key Rules
 
@@ -68,8 +87,7 @@ There is no build step, no compilation, no package manager, and no test suite be
 - **Do not create a `commands/` directory.** All functionality lives in `skills/`.
 - **Verb-first naming** for issues and branches: "Build X", "Implement Y", "Fix Z".
 - **One PR per issue.** Each CIA issue gets its own branch and PR.
-- When adding a new skill, create `skills/<name>/SKILL.md` with proper frontmatter matching the directory name and a non-empty body. Optionally add a `references/` subdirectory.
-- When editing reference files, check `docs-sync.yml` to see if the file maps to an external target that may need syncing.
+- **Scope creep guard.** Discovered work → new sub-issue, never added to parent.
 
 ## Configuration Files
 
@@ -79,9 +97,12 @@ There is no build step, no compilation, no package manager, and no test suite be
 | `.mcp.json` | MCP config — intentionally empty, do not add servers |
 | `docs-sync.yml` | Source-to-target doc sync manifest for `/sync-docs` command |
 | `doppler-template.yaml` | Doppler secret template with 5 tiers of API keys |
+| `CONNECTORS.md` | 4-surface configuration guide (OAuth, Linear, GitHub, Claude) |
 
 ## File Naming Conventions
 
 - Skill directories: lowercase with hyphens (e.g., `deploy-checklist`, `sprint-planning`)
 - Reference files: lowercase with hyphens, `.md` extension (e.g., `triage-rules.md`)
 - Frontmatter `name` field must exactly match the containing directory name
+
+Trust these instructions. Only search the codebase if the information here is incomplete or found to be in error.
