@@ -1,6 +1,8 @@
 ---
+name: roadmap-update
 description: View, update, and manage strategic roadmap via Linear Initiatives and Milestones
 argument-hint: "<--view | --add | --reprioritize | --create>"
+disable-model-invocation: true
 ---
 
 # Roadmap Update
@@ -38,7 +40,7 @@ get_status_updates(initiativeId: "<id>")
 ### Now (this quarter)
 
 #### <Initiative 1>
-- **Health:** 🟢 On Track
+- **Health:** On Track
 - **Milestones:**
   - <Milestone 1> — <target date> (on track)
   - <Milestone 2> — <target date> (at risk)

@@ -1,6 +1,9 @@
 ---
+name: weekly-brief
 description: Cross-project weekly digest from Linear + PostHog + Sentry + Vercel + GCal
 argument-hint: "[--week <YYYY-WNN>]"
+disable-model-invocation: true
+context: fork
 ---
 
 # Weekly Brief

@@ -1,6 +1,8 @@
 ---
+name: decompose
 description: Break a spec into sub-issues with auto:implement label for Codex dispatch
 argument-hint: "<CIA-XXX issue ID>"
+disable-model-invocation: true
 ---
 
 # Decompose

@@ -14,11 +14,11 @@ Map Sentry stack trace paths to repository source paths so stack frames link to 
 
 | Stack Trace Root | Source Root | Repo |
 |-----------------|------------|------|
-| `app/` | `apps/alteri/app/` | cianos95-dev/Claudian-Clinear |
-| `components/` | `apps/alteri/components/` | cianos95-dev/Claudian-Clinear |
-| `modules/` | `apps/alteri/modules/` | cianos95-dev/Claudian-Clinear |
-| `lib/` | `apps/alteri/lib/` | cianos95-dev/Claudian-Clinear |
-| `packages/` | `packages/` | cianos95-dev/Claudian-Clinear |
+| `app/` | `apps/alteri/app/` | Cianai/Claudian |
+| `components/` | `apps/alteri/components/` | Cianai/Claudian |
+| `modules/` | `apps/alteri/modules/` | Cianai/Claudian |
+| `lib/` | `apps/alteri/lib/` | Cianai/Claudian |
+| `packages/` | `packages/` | Cianai/Claudian |
 
 **Note:** These mappings are Alteri-specific. Add SoilWorx mappings when that app has Sentry instrumented.
 

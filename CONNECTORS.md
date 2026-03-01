@@ -180,7 +180,7 @@ Deployment automation via GitHub integration (Surface C).
 | Production deploy | Merge to main triggers production deployment |
 | Status checks | Deploy status reported on PR |
 
-**Setup:** Verify GitHub integration configured for Claudian-Clinear repo in Vercel dashboard.
+**Setup:** Verify GitHub integration configured for Claudian repo in Vercel dashboard.
 
 **Docs:** https://vercel.com/docs/git
 
@@ -277,6 +277,6 @@ All design work happens in **Cowork** (primary) or **Claude Desktop with Preview
 3. **Linear Integrations** — Verify GitHub, Figma, Sentry configs (see `linear-agent-config.md`)
 4. **Linear Integrations** — Configure PostHog + Vercel integrations
 5. **Sentry↔GitHub** — Code mappings, PR comments, suspect commits in Sentry Settings
-6. **Vercel↔Git** — Verify auto-deploy for Claudian-Clinear repo
+6. **Vercel↔Git** — Verify auto-deploy for Claudian repo
 7. **Figma Code Connect** — Separate issue: map `@claudian/ui` components (design-system task)
 8. **Repo secrets** — Add 5 Linear secrets for dependency monitoring workflows

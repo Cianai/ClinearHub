@@ -1,6 +1,9 @@
 ---
+name: stakeholder-update
 description: Multi-source status update from Linear + PostHog + Vercel + Sentry
 argument-hint: "[--project <name>] [--audience <exec|team|customer>] [--post]"
+disable-model-invocation: true
+context: fork
 ---
 
 # Stakeholder Update
@@ -117,7 +120,7 @@ Coming soon: [1-2 upcoming items relevant to the customer]
 ### Key Metrics
 | Metric | Current | Previous | Trend |
 |--------|---------|----------|-------|
-| [Primary metric] | [value] | [value] | [↑/↓/→] |
+| [Primary metric] | [value] | [value] | [trend] |
 
 ### ROAM Risk Register
 | Risk | Status | Owner | Notes |
@@ -138,9 +141,9 @@ Use consistent G/Y/R indicators across all audiences:
 
 | Indicator | Meaning | Concrete Definition |
 |-----------|---------|---------------------|
-| 🟢 Green | On Track | No overdue milestones, no blockers, error rates stable or improving |
-| 🟡 Yellow | At Risk | Any blocker on active issue, milestone within 3 days, OR error rate elevated |
-| 🔴 Red | Off Track | Milestone past target date, critical Sentry issues unresolved, OR velocity <50% of plan |
+| Green | On Track | No overdue milestones, no blockers, error rates stable or improving |
+| Yellow | At Risk | Any blocker on active issue, milestone within 3 days, OR error rate elevated |
+| Red | Off Track | Milestone past target date, critical Sentry issues unresolved, OR velocity <50% of plan |
 
 ## ROAM Risk Framework
 

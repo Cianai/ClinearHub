@@ -1,6 +1,8 @@
 ---
+name: triage
 description: Pull Linear Triage inbox, categorize issues, apply labels, route
 argument-hint: "[--project <name>] [--limit <N>]"
+disable-model-invocation: true
 ---
 
 # Triage

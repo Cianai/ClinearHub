@@ -1,6 +1,8 @@
 ---
+name: critique
 description: Review issue quality — description, ACs, metadata — before agent dispatch
 argument-hint: "<CIA-XXX issue ID> [--batch]"
+disable-model-invocation: true
 ---
 
 # Critique

@@ -1,6 +1,9 @@
 ---
+name: analyze
 description: Analyze product data from PostHog using HogQL queries, funnels, retention, monitoring alerts, notebooks, and dashboards
 argument-hint: "<question about user behavior or metrics> [--app alteri|soilworx] [--period 7d|30d|90d] [--notebook for collaborative analysis]"
+disable-model-invocation: true
+context: fork
 ---
 
 # Analyze

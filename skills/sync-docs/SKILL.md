@@ -1,6 +1,8 @@
 ---
+name: sync-docs
 description: Check and sync plugin reference files with their external targets (Linear UI, Claude Desktop)
 argument-hint: "[--check-only]"
+disable-model-invocation: true
 ---
 
 # Sync Docs
@@ -28,7 +30,7 @@ Output a sync status table:
 ## Documentation Sync Status
 
 | Source File | Target | Status | Last Synced | Last Modified |
-|-------------|--------|--------|-------------|--------------|
+|-------------|--------|--------|-------------|--------------:|
 | linear-agent-config.md (Agent Guidance) | Linear > Team > Agents | STALE | never | 2026-02-27 |
 | linear-agent-config.md (Prompt Template) | Linear > Preferences | STALE | never | 2026-02-27 |
 | cowork-instructions.md (Global) | Desktop > Instructions | OK | 2026-02-27 | 2026-02-27 |

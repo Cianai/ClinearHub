@@ -1,6 +1,8 @@
 ---
+name: deploy-checklist
 description: Pre-deploy verification checklist for Vercel and Railway deployments, covering CI, env vars, Supabase sync, zero-touch agent chain, and rollback readiness
 argument-hint: "[<app-name: alteri|soilworx|all>] [--target vercel|railway] [--post for post-deploy validation]"
+disable-model-invocation: true
 ---
 
 # Deploy Checklist
@@ -100,24 +102,24 @@ This baseline is used for post-deploy comparison.
 ### Pre-Deploy
 | Check | Status | Notes |
 |-------|--------|-------|
-| CI (lint) | ✅ Pass | — |
-| CI (typecheck) | ✅ Pass | — |
-| CI (build) | ✅ Pass | — |
-| Vercel preview | ✅ Ready | [preview URL] |
-| Railway status | ✅ Running | [service domain] |
-| Vercel↔Git integration | ✅ Active | Deploy checks + PR comments |
-| Supabase env sync | ✅ Synced | Last sync: [time] |
-| Sentry DSN | ✅ Set | — |
-| PostHog key | ✅ Set | — |
+| CI (lint) | Pass | — |
+| CI (typecheck) | Pass | — |
+| CI (build) | Pass | — |
+| Vercel preview | Ready | [preview URL] |
+| Railway status | Running | [service domain] |
+| Vercel↔Git integration | Active | Deploy checks + PR comments |
+| Supabase env sync | Synced | Last sync: [time] |
+| Sentry DSN | Set | — |
+| PostHog key | Set | — |
 
 ### Post-Deploy (if --post)
 | Metric | Before | After | Status |
 |--------|--------|-------|--------|
-| Error rate | N/hr | N/hr | ✅ Stable |
-| New errors | — | N | ⚠️ / ✅ |
-| Regressions | — | N | ✅ None |
-| Funnel: [name] | X% | Y% | ✅ Normal |
-| P95 response | Xms | Yms | ✅ Normal |
+| Error rate | N/hr | N/hr | Stable |
+| New errors | — | N | — |
+| Regressions | — | N | None |
+| Funnel: [name] | X% | Y% | Normal |
+| P95 response | Xms | Yms | Normal |
 
 ### Verdict: **GO** / **NO-GO**
 

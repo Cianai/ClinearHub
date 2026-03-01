@@ -60,7 +60,7 @@ Copy the text between the ``` fences below into the "Additional guidance" field.
 
 ```
 Team: Claudian (CIA)
-Repo: Cianai/Claudian-Clinear (Turborepo monorepo)
+Repo: Cianai/Claudian (Turborepo monorepo)
 Apps: alteri (port 3001), soilworx (port 3002)
 Stack: Next.js 16, React 19, TypeScript 5.x, Tailwind v4, pnpm 9
 
@@ -119,7 +119,7 @@ Push → PR → Copilot auto-review → CI (lint+typecheck+build) → Auto-merge
 
 ### GitHub Integration
 
-- **Repo:** `cianos95-dev/Claudian-Clinear`
+- **Repo:** `Cianai/Claudian`
 - **PR status transitions:** Configure per event:
   - On push → move to In Progress
   - On merge to main → move to Done (via `Closes CIA-XXX` magic words)

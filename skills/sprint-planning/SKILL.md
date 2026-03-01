@@ -1,6 +1,8 @@
 ---
+name: sprint-planning
 description: Cycle review, velocity analysis, next sprint composition
 argument-hint: "[--review | --plan | --both]"
+disable-model-invocation: true
 ---
 
 # Sprint Planning

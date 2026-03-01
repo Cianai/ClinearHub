@@ -1,4 +1,5 @@
 ---
+name: standup
 description: Daily standup summary from Linear issues, cycle progress, blockers, and optional Sentry/Vercel/PostHog
 argument-hint: "[--project <name>] [--since <date>]"
 ---

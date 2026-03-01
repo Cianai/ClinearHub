@@ -1,6 +1,8 @@
 ---
+name: write-spec
 description: Draft a spec using Working Backwards PR/FAQ, push to Linear with spec:draft
 argument-hint: "<feature idea, problem statement, or CIA-XXX issue ID>"
+disable-model-invocation: true
 ---
 
 # Write Spec

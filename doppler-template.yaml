@@ -1,0 +1,128 @@
+# ClinearHub Doppler Project Template
+#
+# Creates the `claude-tools` project with a `dev` config containing
+# runtime API keys for local development and app runtime. Secret values
+# are empty — fill them in via the Doppler dashboard after importing.
+#
+# Note: GitHub Actions workflow secrets (PUBLIC_REPO_TOKEN, LINEAR_PROJECT_ID,
+# LINEAR_TEAM_ID, LINEAR_*_LABEL_ID, CLAUDEGBOT_APP_ID, etc.) are configured
+# separately as GitHub repository secrets, not in Doppler.
+#
+# Import:
+#   Dashboard: Click "Import to Doppler" button in README
+#   CLI: doppler import && doppler setup
+#
+# Tiers:
+#   1. Core (required) — Linear, GitHub, Perplexity, OpenAI
+#   2. CI/CD — Firecrawl, Sentry, PostHog, Honeycomb
+#   3. Project-Specific — Supabase, Vercel, Google Maps
+#   4. Research MCPs — Semantic Scholar, OpenAlex, HuggingFace, Kaggle, Zotero
+#   5. AI Providers — Anthropic, Gemini, DeepSeek, xAI
+
+projects:
+  - name: claude-tools
+    description: >-
+      ClinearHub runtime API keys — MCP servers, deployment platforms,
+      and research tools. Organized by tier from required (Tier 1) to
+      optional (Tier 5). GitHub Actions workflow secrets are configured
+      separately as GitHub repository secrets.
+    environments:
+      - name: Development
+        slug: dev
+        configs:
+          - slug: dev
+    secrets:
+      dev:
+        # ── Tier 1: ClinearHub Core (required) ───────────────────────
+        # These are needed for the plugin pipeline to function.
+
+        # Linear > Settings > API > Personal API keys
+        LINEAR_API_KEY: ""
+
+        # GitHub > Settings > Developer settings > Fine-grained PATs
+        # Scopes: repo (read/write), issues, pull requests
+        GITHUB_PERSONAL_ACCESS_TOKEN: ""
+
+        # perplexity.ai > API settings (Pro includes $5/mo credits)
+        PERPLEXITY_API_KEY: ""
+
+        # platform.openai.com > API keys
+        # Used by MarkItDown MCP for image OCR
+        OPENAI_API_KEY: ""
+
+        # ── Tier 2: CI/CD Pipeline ───────────────────────────────────
+        # Required for release workflows, error tracking, and analytics.
+
+        # firecrawl.dev > API settings (per-session MCP, web scraping)
+        FIRECRAWL_API_KEY: ""
+
+        # sentry.io > Settings > Auth Tokens
+        SENTRY_AUTH_TOKEN: ""
+
+        # PostHog > Project Settings > API Keys
+        POSTHOG_API_KEY: ""
+
+        # Usually https://app.posthog.com (or self-hosted URL)
+        POSTHOG_HOST: ""
+
+        # PostHog > Project Settings > Project ID
+        POSTHOG_PROJECT_ID: ""
+
+        # Honeycomb > Account > API Keys (OpenTelemetry)
+        HONEYCOMB_API_KEY: ""
+
+        # ── Tier 3: Project-Specific ─────────────────────────────────
+        # Varies per app using ClinearHub. Fill in for your project.
+
+        # Supabase > Project Settings > API
+        SUPABASE_API_KEY: ""
+
+        # Supabase > Project Settings > General > Reference ID
+        SUPABASE_PROJECT_REF: ""
+
+        # vercel.com > Settings > Tokens
+        VERCEL_TOKEN: ""
+
+        # Vercel > Project Settings > General > Project ID
+        VERCEL_ALTERI_PROJECT_ID: ""
+
+        # Google Cloud Console > APIs & Services > Credentials
+        # Only needed for location-based features (e.g., SoilWorx)
+        GOOGLE_MAPS_API_KEY: ""
+
+        # ── Tier 4: Research MCPs (optional) ─────────────────────────
+        # For research-heavy workflows with academic paper search,
+        # ML model discovery, and library management.
+
+        # semanticscholar.org > API (200M+ papers, citation graphs)
+        SEMANTIC_SCHOLAR_API_KEY: ""
+
+        # OpenAlex polite pool access (email, not key)
+        # openalex.org > 240M+ works, institutions, venues
+        OPENALEX_EMAIL: ""
+
+        # huggingface.co > Settings > Access Tokens
+        HF_TOKEN: ""
+
+        # kaggle.com > Account > API > Create New Token
+        KAGGLE_API_TOKEN: ""
+
+        # Zotero > Settings > Feeds/API
+        # Requires Zotero desktop app running locally
+        ZOTERO_API_KEY: ""
+
+        # ── Tier 5: AI Provider Keys (optional) ─────────────────────
+        # For multi-provider routing. Most users have subscriptions
+        # instead of API keys for their primary provider.
+
+        # console.anthropic.com > API Keys
+        ANTHROPIC_API_KEY: ""
+
+        # aistudio.google.com > API Keys
+        GOOGLE_GEMINI_API_KEY: ""
+
+        # platform.deepseek.com > API Keys
+        DEEPSEEK_API_KEY: ""
+
+        # console.x.ai > API Keys
+        XAI_API_KEY: ""

@@ -1,6 +1,8 @@
 ---
+name: plan
 description: Manage session plans — promote to Linear Documents, review plans, list promoted plans, finalize at session end
 argument-hint: "<--promote [CIA-XXX] | --review [CIA-XXX] | --list [--project <name>] | --index | --finalize [CIA-XXX]>"
+disable-model-invocation: true
 ---
 
 # Plan

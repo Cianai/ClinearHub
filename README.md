@@ -32,7 +32,7 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 
 ## Components
 
-### Skills (9)
+### Reference Skills (9) — auto-loaded by model for context
 
 | Skill | Purpose |
 |-------|---------|
@@ -46,27 +46,32 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 | `plan-persistence` | Session plan lifecycle — promote to Linear Documents, versioning, finalize |
 | `roadmap-management` | Strategic roadmap via Linear Initiatives + Milestones, Now/Next/Later |
 
-### Commands (17)
+### Action Skills (15) — user-invoked via `/clinearhub:<name>`
 
-| Command | Description |
-|---------|-------------|
-| `/write-spec` | Guided spec creation, push to Linear with `spec:draft` |
-| `/triage` | Pull Linear Triage inbox, categorize, apply labels, route |
-| `/stakeholder-update` | Multi-source status update with audience adaptation (exec, team, customer, board) |
-| `/decompose` | Spec to sub-issues with `auto:implement` label |
-| `/sprint-planning` | Cycle review, velocity analysis, capacity table, sprint goal, stretch items |
-| `/update` | Sync/digest from all sources, duplicate detection |
-| `/weekly-brief` | Cross-project digest: Linear + PostHog + Sentry + Vercel + GCal |
-| `/incident` | Triage production errors, classify severity, perform RCA, route fixes |
-| `/standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
-| `/critique` | Review issue quality before agent dispatch |
-| `/deploy-checklist` | Pre/post-deploy verification for Vercel and Railway deployments |
-| `/analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
-| `/verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
-| `/sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
-| `/plan` | Manage session plans — promote, review, list, index, finalize |
-| `/roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
-| `/sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
+| Skill | Description |
+|-------|-------------|
+| `write-spec` | Guided spec creation, push to Linear with `spec:draft` |
+| `triage` | Pull Linear Triage inbox, categorize, apply labels, route |
+| `stakeholder-update` | Multi-source status update with audience adaptation (exec, team, customer, board) |
+| `decompose` | Spec to sub-issues with `auto:implement` label |
+| `sprint-planning` | Cycle review, velocity analysis, capacity table, sprint goal, stretch items |
+| `weekly-brief` | Cross-project digest: Linear + PostHog + Sentry + Vercel + GCal |
+| `incident` | Triage production errors, classify severity, perform RCA, route fixes |
+| `critique` | Review issue quality before agent dispatch |
+| `deploy-checklist` | Pre/post-deploy verification for Vercel and Railway deployments |
+| `analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
+| `verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
+| `sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
+| `plan` | Manage session plans — promote, review, list, index, finalize |
+| `roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
+| `sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
+
+### Query Skills (2) — auto-invocable by model
+
+| Skill | Description |
+|-------|-------------|
+| `update` | Sync/digest from all sources, duplicate detection |
+| `standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
 
 ### Planned Skills
 
@@ -100,6 +105,23 @@ cd ~/Repositories/ClinearHub && ./packages/clinear-plugin/build-plugin.sh --open
 
 When a new version is tagged, CI auto-builds and publishes to [Releases](https://github.com/Cianai/ClinearHub/releases). Download the zip and re-upload to Claude Desktop. Restart your Cowork session to pick up changes.
 
+### ClinearHubBot GitHub App
+
+ClinearHubBot is a GitHub App that powers the automated parts of the Clinear pipeline:
+
+- **Post-merge reconciliation**: Updates Linear issue statuses when PRs are merged
+- **Dependency monitoring**: Daily ecosystem discovery via GitHub Search API + RSS feeds, auto-creates Linear `type:spike` issues for new tools/plugins/MCPs
+- **Release automation**: Syncs version info to Linear project descriptions on release
+
+**For Claudian contributors**: ClinearHubBot is already installed on the Claudian repo. No action needed.
+
+**For other ClinearHub adopters**: Install the [ClinearHubBot GitHub App](https://github.com/apps/clinearhubbot) on your repo. The app needs:
+- Read/write access to issues, PRs, and contents
+- A `.github/monitored-repos.yml` file listing your dependency repos (see [example](../../.github/monitored-repos.yml))
+- Linear API key and project ID configured as repository secrets (`LINEAR_API_KEY`, `LINEAR_PROJECT_ID`)
+
+> **Note**: The app is currently configured for the Claudian workspace. Generalization for arbitrary Linear teams/projects (per-repo config via `.github/clinearhub.yml`) is tracked in [CIA-789](https://linear.app/claudian/issue/CIA-789/generalize-clinearhubbot-github-app-for-arbitrary-repos).
+
 ### Creating a Release
 
 ```bash
@@ -127,6 +149,14 @@ PostHog, Vercel, Notion, Granola, Mermaid Chart, Google Drive, HuggingFace — c
 - **Triage Rules:** Rule 1: `spec:draft` → ChatPRD. Rule 2: `auto:implement` → Codex.
 - **Labels:** 38 workspace-level labels (type, spec, exec, ctx, research, template, origin, auto)
 - **Full reference:** [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md)
+
+### Secrets (Doppler)
+
+ClinearHub uses [Doppler](https://www.doppler.com/) to manage API keys. Import the template for one-click project setup:
+
+[![Import to Doppler](https://raw.githubusercontent.com/DopplerHQ/integration-logos/main/doppler/import-to-doppler.svg)](https://dashboard.doppler.com/workplace/template/import?template=https%3A%2F%2Fgithub.com%2FCianai%2FClinearHub%2Fblob%2Fmain%2Fdoppler-template.yaml)
+
+This creates a `claude-tools` project with all required secret placeholders organized by tier. Fill in your API key values in the Doppler dashboard. See the [Operator Guide](skills/clinearhub-workflow/references/operator-guide.md#6-first-time-setup-onboarding) for step-by-step onboarding.
 
 ### Configuration Surfaces
 
@@ -159,6 +189,8 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 | Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/plan-persistence/references/promotion-protocol.md) |
 | Multi-Surface Review | Cross-surface plan review chain (Cowork → Code → IDE) | [`multi-surface-review.md`](skills/plan-persistence/references/multi-surface-review.md) |
 | Initiative Patterns | Initiative + Milestone management templates | [`initiative-patterns.md`](skills/roadmap-management/references/initiative-patterns.md) |
+| Operator Guide | Human operator playbook — session lifecycle, releases, onboarding | [`operator-guide.md`](skills/clinearhub-workflow/references/operator-guide.md) |
+| Doppler Template | One-click secret provisioning (Tiers 1-5, 24 secrets) | [`doppler-template.yaml`](./doppler-template.yaml) |
 | Docs Sync Manifest | Source-target documentation sync | [`docs-sync.yml`](docs-sync.yml) |
 
 ## Stack Skills

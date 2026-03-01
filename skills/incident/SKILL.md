@@ -1,6 +1,9 @@
 ---
+name: incident
 description: Triage production errors from Sentry, classify severity, perform RCA, route fixes
 argument-hint: "[<CIA-XXX issue ID> | --sweep] [--severity <P1|P2|P3|P4>]"
+disable-model-invocation: true
+context: fork
 ---
 
 # Incident

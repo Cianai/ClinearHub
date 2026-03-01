@@ -1,6 +1,8 @@
 ---
+name: sync-status
 description: Mechanical cross-surface status sync — write current state to Linear + GitHub surfaces
 argument-hint: "[--surfaces <linear,github,all>] [--project <name>]"
+disable-model-invocation: true
 ---
 
 # Sync Status

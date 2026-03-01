@@ -1,4 +1,5 @@
 ---
+name: update
 description: Sync and digest from all sources, with duplicate detection
 argument-hint: "[--comprehensive] [--project <name>]"
 ---

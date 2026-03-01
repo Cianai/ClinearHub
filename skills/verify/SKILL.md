@@ -1,6 +1,8 @@
 ---
+name: verify
 description: Post-merge outcome validation — synthesize all AI + agent work for human review
 argument-hint: "<CIA-XXX parent spec issue ID> [--quick for summary only]"
+disable-model-invocation: true
 ---
 
 # Verify
