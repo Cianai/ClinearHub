@@ -135,13 +135,25 @@ CI will build the zip, generate release notes from commits, and publish the rele
 
 ## Setup
 
-### OAuth Connectors (in plugin .mcp.json)
+### Required Connectors
 
-Linear, GitHub, Notion, Figma, Sentry, Google Calendar, Gmail — these are bundled with the plugin and connect via OAuth on first use.
+ClinearHub relies on global OAuth connectors — it does **not** bundle its own MCP servers. Connect these in Claude Desktop > Settings > Connectors (or `claude.ai/settings/connectors`):
 
-### Desktop Connectors (configure in Settings > Connectors)
+| Tier | Connector | Purpose |
+|------|-----------|---------|
+| **Core** | Linear | Issue tracking, triage, specs, agent dispatch |
+| **Core** | GitHub | PRs, code review, zero-touch loop |
+| **Enhanced** | Sentry | Error tracking, alerting, root cause analysis |
+| **Enhanced** | PostHog | Product analytics, feature adoption, funnels |
+| **Enhanced** | Vercel | Deployment status, preview verification |
+| **Supplementary** | Notion | Knowledge base, meeting notes |
+| **Supplementary** | Figma | Design handoff, component specs |
+| **Supplementary** | Google Calendar | Sprint planning, standups |
+| **Supplementary** | Gmail | Stakeholder updates |
+| **Supplementary** | Granola | Meeting notes → Linear issue pipeline |
+| **Supplementary** | Mermaid Chart | Architecture and process diagrams |
 
-PostHog, Vercel, Notion, Granola, Mermaid Chart, Google Drive, HuggingFace — connect these manually in Claude Desktop or Cowork settings.
+Core connectors are required — commands fail without them. Enhanced connectors degrade gracefully (commands complete with reduced data). Supplementary connectors are optional (affected sections silently omitted).
 
 ### Linear Configuration
 
@@ -161,7 +173,7 @@ This creates a `claude-tools` project with all required secret placeholders orga
 ### Configuration Surfaces
 
 See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
-- **Surface A:** ClinearHub Plugin (OAuth Connectors in [`.mcp.json`](.mcp.json))
+- **Surface A:** Global OAuth Connectors (Claude Desktop > Settings > Connectors)
 - **Surface B:** Linear Agents & Integrations (Settings UI, documented in [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md))
 - **Surface C:** GitHub Repo Config (Copilot, CI, Dependabot, auto-merge)
 - **Surface D:** Claude Code Repo Config (`CLAUDE.md`, skills, plugins)
@@ -197,16 +209,41 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 
 ClinearHub handles PM methodology. Stack-specific coding skills (React, Next.js, Supabase, shadcn, etc.) are installed separately at the repo level in `.claude/skills/` via `npx skills add`. See the root `CLAUDE.md` for the full inventory.
 
-## Relationship to CCC
+## Known Issues & Caveats
 
-ClinearHub replaces CCC for Cowork/PM usage. CCC remains as a maintenance-mode Claude Code plugin for complex dev work (hooks, git ops, parallel dispatch, TDD enforcement). ClinearHub is the Cowork plugin for PM work.
+### Plugin System Bugs (Claude Code)
 
-| Concern | ClinearHub (Cowork) | CCC (Code) |
-|---------|-----------------|------------|
-| Spec writing | /write-spec | /ccc:write-prfaq |
-| Triage | /triage | /ccc:hygiene |
-| Decomposition | /decompose | /ccc:decompose |
-| Status updates | /stakeholder-update | /ccc:status-update |
-| Implementation | Linear agent dispatch | /ccc:go, /ccc:start |
-| Code review | Copilot auto-review | /ccc:review, /ccc:pr-dispatch |
-| Adversarial review | Linear Agent Teams | /ccc:review |
+These are upstream Claude Code issues that affect ClinearHub and all plugins:
+
+| Issue | Impact | Workaround |
+|-------|--------|------------|
+| [Plugin duplication on reinstall](https://github.com/anthropics/claude-code/issues/26513) | Skills appear 2-4x in system prompt, wasting context | After reinstall, verify single entry in `~/.claude/plugins/installed_plugins.json` |
+| [Disabled plugins still load skills](https://github.com/anthropics/claude-code/issues/13344) | `enabledPlugins: false` not fully respected | Fully uninstall disabled plugins, don't just toggle off |
+| [Skills duplicated in system prompt](https://github.com/anthropics/claude-code/issues/29520) | Double context usage for all skills | No workaround — awaiting upstream fix |
+| [Background subagents can't use MCP](https://github.com/anthropics/claude-code/issues/13254) | MCP tools unavailable in `run_in_background` agents | Use foreground subagents for any MCP-dependent task |
+
+### Connector Duplication
+
+**Do not bundle OAuth connectors in the plugin `.mcp.json`.** Claude Desktop global connectors and plugin-bundled connectors create duplicate tool registrations with no deduplication ([#2093](https://github.com/anthropics/claude-code/issues/2093)). ClinearHub's `.mcp.json` is intentionally empty — all connectors should be configured globally in Claude Desktop > Settings > Connectors.
+
+If you previously had connectors bundled in the plugin, remove them and rely on global connectors to avoid:
+- Triple tool registration on Code (stdio + OAuth + plugin)
+- Double tool registration on Cowork (OAuth + plugin)
+- ~90 extra deferred tools consuming context per session
+
+### On-Demand MCP Loading
+
+Tool Search (lazy schema loading) is available on **Claude Code only** — not on Desktop/Cowork. On Code, set `ENABLE_TOOL_SEARCH: "auto"` in settings to defer tool schemas until needed (~85% context reduction). Tool *names* still appear in every session regardless.
+
+### Recommended Configuration
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto"  // defer MCP tool schemas
+  }
+}
+```
+
+For Claude Code with stdio MCP servers (`~/.mcp.json`), avoid duplicating services already available as global OAuth connectors. If Linear is connected via OAuth, remove the Linear stdio server from `~/.mcp.json` to prevent duplicate tool registration.

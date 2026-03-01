@@ -4,40 +4,40 @@
 
 ClinearHub's stack spans 4 distinct configuration surfaces. Each surface serves different agents with different tools.
 
-## Surface A: ClinearHub Plugin (`.mcp.json`) — Cowork Sessions
+## Surface A: Global OAuth Connectors — Cowork & Desktop Sessions
 
-OAuth Connectors bundled with the plugin. Auto-prompt for OAuth on first use in Cowork/Desktop.
+ClinearHub does **not** bundle its own MCP servers (`.mcp.json` is empty). All connectors are configured globally in Claude Desktop > Settings > Connectors (or `claude.ai/settings/connectors`). This avoids duplicate tool registrations — see [Known Issues in README](README.md#known-issues--caveats).
+
+> **Why not plugin-bundled?** Plugin `.mcp.json` servers duplicate global OAuth connectors with no deduplication logic ([#2093](https://github.com/anthropics/claude-code/issues/2093)). Each duplicate adds ~30 deferred tools to the context window. With 7 bundled connectors, that's ~210 extra tools registered for nothing.
 
 ### Required (core workflow)
 
-| Tool | MCP endpoint | Purpose |
-|------|-------------|---------|
-| Linear | `mcp.linear.app/mcp` | Issue tracking, triage, specs, agent dispatch |
-| GitHub | `api.githubcopilot.com/mcp/` | PRs, code review, zero-touch loop |
-| Sentry | `mcp.sentry.dev/mcp` | Error tracking, alerting, root cause analysis |
+| Tool | Connect via | Purpose |
+|------|-----------|---------|
+| Linear | Settings > Connectors | Issue tracking, triage, specs, agent dispatch |
+| GitHub | Settings > Connectors | PRs, code review, zero-touch loop |
 
-### Recommended (enhanced workflow)
+### Enhanced (degrades gracefully)
 
-| Tool | MCP endpoint | Purpose |
-|------|-------------|---------|
-| Notion | `mcp.notion.com/mcp` | Knowledge base, meeting notes |
-| Figma | `mcp.figma.com/mcp` | Design handoff, component specs |
-| Google Calendar | `gcal.mcp.claude.com/mcp` | Sprint planning, standups |
-| Gmail | `gmail.mcp.claude.com/mcp` | Stakeholder updates |
+| Tool | Connect via | Purpose |
+|------|-----------|---------|
+| Sentry | Settings > Connectors | Error tracking, alerting, root cause analysis |
+| PostHog | Settings > Connectors | Product analytics, feature adoption, funnel analysis |
+| Vercel | Settings > Connectors | Deployment status, preview verification |
 
-### Desktop Connectors (not plugin-bundled)
+### Supplementary (optional)
 
-Configure manually in Claude Desktop > Settings > Connectors:
-
-| Tool | Purpose |
-|------|---------|
-| PostHog | Product analytics, feature adoption, funnel analysis |
-| Vercel | Deployment status, preview verification |
-| Railway | Deployment platform, service management |
-| Granola | Meeting notes → Linear issue pipeline |
-| Mermaid Chart | Architecture and process diagrams |
-| Google Drive | Document storage and sharing |
-| HuggingFace | ML model discovery and evaluation |
+| Tool | Connect via | Purpose |
+|------|-----------|---------|
+| Notion | Settings > Connectors | Knowledge base, meeting notes |
+| Figma | Settings > Connectors | Design handoff, component specs |
+| Google Calendar | Settings > Connectors | Sprint planning, standups |
+| Gmail | Settings > Connectors | Stakeholder updates |
+| Granola | Settings > Connectors | Meeting notes → Linear issue pipeline |
+| Mermaid Chart | Settings > Connectors | Architecture and process diagrams |
+| Google Drive | Settings > Connectors | Document storage and sharing |
+| HuggingFace | Settings > Connectors | ML model discovery and evaluation |
+| Railway | CLI (`~/.mcp.json`) | Deployment platform (no OAuth connector available) |
 
 ## Surface B: Linear Agents & Integrations
 
@@ -196,9 +196,9 @@ Deployment automation via GitHub integration (Surface C).
 
 | Tier | Connectors | Availability | Failure Mode |
 |------|-----------|-------------|--------------|
-| **Core** (pipeline breaks without) | Linear, GitHub | OAuth (plugin) | Command fails with error — cannot proceed |
-| **Enhanced** (richer output, degrades gracefully) | Sentry, PostHog, Vercel, Railway | OAuth/Desktop/CLI | Command completes with reduced data, notes missing source |
-| **Supplementary** (optional enrichment) | Figma, Notion, GCal, Gmail, Granola, Mermaid | OAuth (plugin/desktop) | Command completes normally, skips section |
+| **Core** (pipeline breaks without) | Linear, GitHub | Global OAuth | Command fails with error — cannot proceed |
+| **Enhanced** (richer output, degrades gracefully) | Sentry, PostHog, Vercel, Railway | Global OAuth / CLI | Command completes with reduced data, notes missing source |
+| **Supplementary** (optional enrichment) | Figma, Notion, GCal, Gmail, Granola, Mermaid | Global OAuth | Command completes normally, skips section |
 
 ### Command → Connector Cross-Reference
 
@@ -272,8 +272,8 @@ All design work happens in **Cowork** (primary) or **Claude Desktop with Preview
 
 ## Setup Checklist
 
-1. **Plugin OAuth** — Connect all 7 plugin connectors on first Cowork session
-2. **Desktop Connectors** — PostHog, Vercel, Granola, Mermaid Chart in Settings > Connectors
+1. **Global Connectors** — Connect Linear, GitHub, Sentry, PostHog, Vercel + any supplementary connectors in Settings > Connectors
+2. **Verify no plugin-bundled duplicates** — ClinearHub `.mcp.json` should be `{"mcpServers": {}}`. If upgrading from <v1.2, rebuild the plugin zip after clearing it.
 3. **Linear Integrations** — Verify GitHub, Figma, Sentry configs (see `linear-agent-config.md`)
 4. **Linear Integrations** — Configure PostHog + Vercel integrations
 5. **Sentry↔GitHub** — Code mappings, PR comments, suspect commits in Sentry Settings
