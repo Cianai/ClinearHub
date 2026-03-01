@@ -67,7 +67,7 @@ Skills may optionally have a `references/` subdirectory with supporting `.md` fi
 There are three skill types:
 - **Reference skills** (9): Auto-loaded for context (e.g., `clinearhub-workflow`, `incident-response`)
 - **Action skills** (15): User-invoked via `/clinearhub:<name>` (e.g., `write-spec`, `triage`)
-- **Query skills** (2): Auto-invocable by model (e.g., `update`, `standup`)
+- **Query skills** (3): Auto-invocable by model (e.g., `update`, `standup`, `discovery-digest`)
 
 ### Adding a New Skill
 
