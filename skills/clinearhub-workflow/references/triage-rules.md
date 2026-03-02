@@ -22,9 +22,9 @@ Two automated triage rules handle agent dispatch. Configure in Linear Settings >
 - **Action:** Delegate to Codex agent
 - **What Codex does:**
   - Reads issue description and acceptance criteria
-  - Creates branch: `CIA-XXX-short-slug` (lowercase, kebab-case)
+  - Creates branch: `<ISSUE-ID>-short-slug` (lowercase, kebab-case, e.g. `CIA-123-add-auth`, `ALT-45-fix-voice`)
   - Implements the feature/fix
-  - Opens PR with `Closes CIA-XXX` in body
+  - Opens PR with `Closes <ISSUE-ID>` in body
   - PR enters GitHub Copilot auto-review + CI pipeline
 
 ## Manual Triage Protocol
@@ -43,7 +43,7 @@ Daily sweep of the Linear Triage view (keyboard shortcut: `G T`).
 For each issue in Triage:
 
 1. **Type label** (required): Apply exactly one of `type:feature`, `type:bug`, `type:chore`, `type:spike`
-2. **Project assignment**: Assign to the correct project (Claudian Platform, ClinearHub, Alteri, Cognito, CCC)
+2. **Project assignment**: Assign to the correct project (Claudian Platform, ClinearHub, Alteri). Route to the correct team: Claudian (CIA — shared/infra), Alteri (ALT — Alteri app), SoilWorx (SWX — SoilWorx app)
 3. **Duplicate check**: Search `list_issues(project, query: "<key terms>", limit: 10)` for overlapping scope
 4. **Estimate**: Fibonacci (1, 2, 3, 5, 8, 13) based on complexity assessment
 5. **Route decision**:
@@ -107,6 +107,29 @@ PR merged → Reconciliation Action (Tier 2)
 **Edge case:** Sub-issues closed without PRs (spikes, manual closures) don't trigger the Action. For these, `/plan --finalize` checks sibling status as part of its session close protocol.
 
 **Previous approach (superseded):** n8n webhook bridge was planned to detect "all children Done" via Linear webhooks. This is no longer needed — the GitHub Action handles the same detection at PR merge time, with full PR context (diff, review comments, CI status).
+
+## SLA Integration
+
+**Configuration:** Settings > Workspace > SLAs (workspace-level, applies to all teams)
+
+| Rule | Filter | SLA Duration | Rationale |
+|------|--------|-------------|-----------|
+| 1 | Priority = Urgent | 24 hours | Standard urgent response |
+| 2 | Priority = High | 1 week | Standard high-priority deadline |
+| 3 | Label = `urgent` | 24 hours | Catch issues with `urgent` label regardless of priority |
+| 4 | Label = `type:bug` + Priority = Urgent | 12 hours | Critical bugs get tighter window |
+
+**Business days:** Monday-Friday. SLA calculations exclude weekends.
+
+**SLA fields** (available in Linear MCP and API):
+- `slaStartedAt` — when the SLA timer began
+- `slaMediumRiskAt` — approaching deadline
+- `slaHighRiskAt` — deadline imminent
+- `slaBreachesAt` — SLA deadline timestamp
+
+**Triage priority:** The Processing Order above lists "SLA first" — use `slaBreachesAt` to sort issues approaching breach to the top.
+
+**Monitoring:** Create a saved view "SLA Tracker" filtered to `SLA Status is not empty`, grouped by SLA status. Pin to sidebar.
 
 ## WIP Limits
 

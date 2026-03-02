@@ -32,7 +32,7 @@ Backlog    ↓    (back to Todo)  (back to In Progress)
 ### In Progress → In Review
 - **Who:** Agent (typically Codex after PR opened)
 - **Conditions:** PR opened or review requested
-- **Actions:** Apply `ctx:review`. PR body must include `Closes CIA-XXX`.
+- **Actions:** Apply `ctx:review`. PR body must include `Closes <ISSUE-ID>` (e.g. `Closes CIA-123`, `Closes ALT-45`).
 
 ### In Review → Done
 - **Who:** Agent (after PR merge) or human

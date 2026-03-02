@@ -46,6 +46,25 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 | `plan-persistence` | Session plan lifecycle — promote to Linear Documents, versioning, finalize |
 | `roadmap-management` | Strategic roadmap via Linear Initiatives + Milestones, Now/Next/Later |
 
+### Slash Commands (15) — user-invoked via `/<name>`
+
+| Command | Description |
+|---------|-------------|
+| `/write-spec` | Guided spec creation, push to Linear with `spec:draft` |
+| `/triage` | Pull Linear Triage inbox, categorize, apply labels, route |
+| `/stakeholder-update` | Multi-source status update with audience adaptation (exec, team, customer, board) |
+| `/decompose` | Spec to sub-issues with `auto:implement` label |
+| `/sprint-planning` | Cycle review, velocity analysis, capacity table, sprint goal, stretch items |
+| `/weekly-brief` | Cross-project digest: Linear + PostHog + Sentry + Vercel + GCal |
+| `/incident` | Triage production errors, classify severity, perform RCA, route fixes |
+| `/critique` | Review issue quality before agent dispatch |
+| `/deploy-checklist` | Pre/post-deploy verification for Vercel and Railway deployments |
+| `/analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
+| `/verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
+| `/sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
+| `/plan` | Manage session plans — promote, review, list, index, finalize |
+| `/roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
+| `/sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
 ### Action Skills (15) — user-invoked via `/clinearhub:<name>`
 
 | Skill | Description |
@@ -73,14 +92,12 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 | `update` | Sync/digest from all sources, duplicate detection |
 | `standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
 
-### Planned Skills
+### Query Commands (2) — auto-invocable by model
 
-| Skill | Purpose |
-|-------|---------|
-| `customer-intelligence` | Linear Customer Requests + Notion CRM + Asks |
-| `knowledge-management` | Notion + Linear docs |
-| `design-workflow` | Figma + Magic Patterns + UX writing |
-| `meeting-intelligence` | Granola to Linear issue pipeline |
+| Command | Description |
+|---------|-------------|
+| `/update` | Sync/digest from all sources, duplicate detection |
+| `/standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
 
 ## Installation
 
@@ -135,6 +152,13 @@ CI will build the zip, generate release notes from commits, and publish the rele
 
 ## Setup
 
+### Connectors (configure in Claude Desktop > Settings > Connectors)
+
+All connectors should be configured globally — do **not** bundle them in the plugin `.mcp.json` to avoid duplicate tool registrations. See [Known Issues](#known-issues--caveats) for details.
+
+OAuth Connectors (global): Linear, GitHub, Notion, Figma, Sentry, Google Calendar, Gmail
+
+Desktop Connectors (Settings > Connectors): PostHog, Vercel, Granola, Mermaid Chart, Google Drive, HuggingFace
 ### Required Connectors
 
 ClinearHub relies on global OAuth connectors — it does **not** bundle its own MCP servers. Connect these in Claude Desktop > Settings > Connectors (or `claude.ai/settings/connectors`):
@@ -159,7 +183,7 @@ Core connectors are required — commands fail without them. Enhanced connectors
 
 - **Team:** Claudian (CIA)
 - **Triage Rules:** Rule 1: `spec:draft` → ChatPRD. Rule 2: `auto:implement` → Codex.
-- **Labels:** 38 workspace-level labels (type, spec, exec, ctx, research, template, origin, auto)
+- **Labels:** Workspace-level labels (type, spec, exec, ctx, research, template, origin, auto)
 - **Full reference:** [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md)
 
 ### Secrets (Doppler)
@@ -173,6 +197,7 @@ This creates a `claude-tools` project with all required secret placeholders orga
 ### Configuration Surfaces
 
 See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
+- **Surface A:** ClinearHub Plugin (`.mcp.json` is intentionally empty — use global OAuth connectors)
 - **Surface A:** Global OAuth Connectors (Claude Desktop > Settings > Connectors)
 - **Surface B:** Linear Agents & Integrations (Settings UI, documented in [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md))
 - **Surface C:** GitHub Repo Config (Copilot, CI, Dependabot, auto-merge)
@@ -187,7 +212,7 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 | Agent Guidance | Text for Linear Settings > Team > Agents | [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md) |
 | Cowork Instructions | Text for Claude Desktop > Settings > Instructions | [`cowork-instructions.md`](skills/clinearhub-workflow/references/cowork-instructions.md) |
 | Triage Rules | Triage protocol, Sentry routing, Phase 8 automation | [`triage-rules.md`](skills/clinearhub-workflow/references/triage-rules.md) |
-| Label Taxonomy | All 38 workspace labels with rules | [`label-taxonomy.md`](skills/clinearhub-workflow/references/label-taxonomy.md) |
+| Label Taxonomy | All workspace labels with rules | [`label-taxonomy.md`](skills/clinearhub-workflow/references/label-taxonomy.md) |
 | Execution Modes | quick/tdd/pair/checkpoint/swarm/spike | [`execution-modes.md`](skills/clinearhub-workflow/references/execution-modes.md) |
 | ChatPRD Personas | Working Backwards, Five Whys, Pre-Mortem, Layman Clarity | [`chatprd-personas.md`](skills/spec-enrichment/references/chatprd-personas.md) |
 | PR/FAQ Templates | 4 spec templates (feature, infra, research, quick) | [`prfaq-templates.md`](skills/spec-enrichment/references/prfaq-templates.md) |
@@ -212,6 +237,9 @@ ClinearHub handles PM methodology. Stack-specific coding skills (React, Next.js,
 ## Known Issues & Caveats
 
 ### Plugin System Bugs (Claude Code)
+
+These are upstream Claude Code issues that affect ClinearHub and all plugins:
+
 
 These are upstream Claude Code issues that affect ClinearHub and all plugins:
 

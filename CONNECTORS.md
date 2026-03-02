@@ -6,6 +6,7 @@ ClinearHub's stack spans 4 distinct configuration surfaces. Each surface serves 
 
 ## Surface A: Global OAuth Connectors — Cowork & Desktop Sessions
 
+ClinearHub's `.mcp.json` is **intentionally empty** — all connectors should be configured globally in Claude Desktop > Settings > Connectors to avoid duplicate tool registrations ([#2093](https://github.com/anthropics/claude-code/issues/2093)). The connectors listed below are required/recommended but must be set up globally, not bundled in the plugin.
 ClinearHub does **not** bundle its own MCP servers (`.mcp.json` is empty). All connectors are configured globally in Claude Desktop > Settings > Connectors (or `claude.ai/settings/connectors`). This avoids duplicate tool registrations — see [Known Issues in README](README.md#known-issues--caveats).
 
 > **Why not plugin-bundled?** Plugin `.mcp.json` servers duplicate global OAuth connectors with no deduplication logic ([#2093](https://github.com/anthropics/claude-code/issues/2093)). Each duplicate adds ~30 deferred tools to the context window. With 7 bundled connectors, that's ~210 extra tools registered for nothing.
@@ -196,6 +197,9 @@ Deployment automation via GitHub integration (Surface C).
 
 | Tier | Connectors | Availability | Failure Mode |
 |------|-----------|-------------|--------------|
+| **Core** (pipeline breaks without) | Linear, GitHub | OAuth (global) | Command fails with error — cannot proceed |
+| **Enhanced** (richer output, degrades gracefully) | Sentry, PostHog, Vercel, Railway | OAuth/Desktop/CLI | Command completes with reduced data, notes missing source |
+| **Supplementary** (optional enrichment) | Figma, Notion, GCal, Gmail, Granola, Mermaid | OAuth (global/desktop) | Command completes normally, skips section |
 | **Core** (pipeline breaks without) | Linear, GitHub | Global OAuth | Command fails with error — cannot proceed |
 | **Enhanced** (richer output, degrades gracefully) | Sentry, PostHog, Vercel, Railway | Global OAuth / CLI | Command completes with reduced data, notes missing source |
 | **Supplementary** (optional enrichment) | Figma, Notion, GCal, Gmail, Granola, Mermaid | Global OAuth | Command completes normally, skips section |
@@ -272,6 +276,8 @@ All design work happens in **Cowork** (primary) or **Claude Desktop with Preview
 
 ## Setup Checklist
 
+1. **Global OAuth Connectors** — Connect Linear, GitHub, Notion, Figma, Sentry, GCal, Gmail in Claude Desktop > Settings > Connectors (not in plugin `.mcp.json`)
+2. **Desktop Connectors** — PostHog, Vercel, Granola, Mermaid Chart in Settings > Connectors
 1. **Global Connectors** — Connect Linear, GitHub, Sentry, PostHog, Vercel + any supplementary connectors in Settings > Connectors
 2. **Verify no plugin-bundled duplicates** — ClinearHub `.mcp.json` should be `{"mcpServers": {}}`. If upgrading from <v1.2, rebuild the plugin zip after clearing it.
 3. **Linear Integrations** — Verify GitHub, Figma, Sentry configs (see `linear-agent-config.md`)

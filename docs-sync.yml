@@ -12,7 +12,7 @@
 mappings:
   - source: skills/clinearhub-workflow/references/linear-agent-config.md
     target: "Linear Settings > Team > Agents > Additional Guidance"
-    section: "Agent Additional Guidance"
+    section: "Agent Guidance"
     last_synced: 2026-02-28
 
   - source: skills/clinearhub-workflow/references/linear-agent-config.md
