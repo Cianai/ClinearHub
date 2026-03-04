@@ -229,4 +229,4 @@ Every file reference in Linear issues, comments, and session output must be a cl
 - **roadmap-management** — Governs initiative/milestone tracking
 - **task-management** — Governs standups, daily workflow
 - **_archived/spec-enrichment** — Historical: PR/FAQ templates, ChatPRD personas (now handled by ChatPRD directly)
-- **_archived/plan-persistence** — Historical: plan lifecycle management (now via ChatPRD MCP + Linear documents)
+- **plan-persistence** — Plan lifecycle management, Linear Document promotion, session start context recovery

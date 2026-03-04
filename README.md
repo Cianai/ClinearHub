@@ -44,11 +44,12 @@ Agents handle the spec-to-ship loop autonomously:
 
 ## Components
 
-### Reference Skills (8) — auto-loaded by model for context
+### Reference Skills (9) — auto-loaded by model for context
 
 | Skill | Purpose |
 |-------|---------|
 | `clinearhub-workflow` | Core 6-phase pipeline, triage rules, label taxonomy, agent dispatch |
+| `plan-persistence` | Plan lifecycle, Linear Document promotion, session start context recovery |
 | `issue-lifecycle` | Status transitions, ownership boundaries, closure protocol |
 | `incident-response` | Sentry→Linear error pipeline, triage, severity classification, RCA |
 | `task-management` | Daily standups, issue critique |
@@ -57,12 +58,11 @@ Agents handle the spec-to-ship loop autonomously:
 | `roadmap-management` | Strategic roadmap via Linear Initiatives + Milestones, Now/Next/Later |
 | `research-intelligence` | Research data pipeline, paper ingestion, RAG, Supabase pgvector |
 
-### Archived Skills (3) — in `skills/_archived/`, kept for reference
+### Archived Skills (2) — in `skills/_archived/`, kept for reference
 
 | Skill | Reason Archived | Replacement |
 |-------|-----------------|-------------|
 | `spec-enrichment` | ChatPRD handles spec creation upstream | ChatPRD + @chatprd Linear agent |
-| `plan-persistence` | Specs live in ChatPRD/Linear, not plugin-managed | ChatPRD MCP + Linear documents |
 | `discovery-digest` | `dependency-monitor.yml` handles this in GitHub Actions | Existing workflow |
 
 ### Action Skills (13) — user-invoked via `/clinearhub:<name>`
@@ -215,9 +215,8 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 | PostHog Queries | HogQL patterns, funnel templates | [`posthog-queries.md`](skills/data-analytics/references/posthog-queries.md) |
 | Vercel Checks | Deploy verification patterns | [`vercel-checks.md`](skills/deployment-verification/references/vercel-checks.md) |
 | Railway Checks | Railway deployment verification | [`railway-checks.md`](skills/deployment-verification/references/railway-checks.md) |
-| Plan Format | Plan document template and conventions | [`plan-format.md`](skills/_archived/plan-persistence/references/plan-format.md) (archived) |
-| Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/_archived/plan-persistence/references/promotion-protocol.md) (archived) |
-| Multi-Surface Review | Cross-surface plan review chain (Cowork → Code → IDE) | [`multi-surface-review.md`](skills/_archived/plan-persistence/references/multi-surface-review.md) (archived) |
+| Plan Format | Plan document template and conventions | [`plan-format.md`](skills/plan-persistence/references/plan-format.md) |
+| Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/plan-persistence/references/promotion-protocol.md) |
 | Initiative Patterns | Initiative + Milestone management templates | [`initiative-patterns.md`](skills/roadmap-management/references/initiative-patterns.md) |
 | Operator Guide | Human operator playbook — session lifecycle, releases, onboarding | [`operator-guide.md`](skills/clinearhub-workflow/references/operator-guide.md) |
 | Manual Config | Linear UI settings not available via API (TI, triage rules, SLA) | [`linear-manual-config.md`](docs/linear-manual-config.md) |

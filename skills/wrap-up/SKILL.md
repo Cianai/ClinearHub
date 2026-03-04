@@ -10,7 +10,7 @@ description: |
 
 # Session Wrap-Up
 
-Run four phases in order. Each phase is conversational and inline — no separate
+Run six phases in order. Each phase is conversational and inline — no separate
 documents. All phases auto-apply without asking; present a consolidated report
 at the end.
 
@@ -48,6 +48,34 @@ at the end.
 8. Check the todo list for in-progress or stale items
 9. Mark completed tasks as done, flag orphaned ones
 10. Clear the todo list (all items should be completed or explicitly deferred)
+
+---
+
+## Phase 1.5: Plan Promotion
+
+If a plan was created or iterated during this session, promote it to Linear
+before normalizing issue statuses. Skip if the session was trivial (no plan,
+< 5 tasks, single quick fix — the closing comment in Phase 2b suffices).
+
+See [plan-persistence](../plan-persistence/SKILL.md) for the full protocol.
+
+### 1.5a — Identify Session Plan
+
+1. **Cowork**: Summarize session decisions, scope, and tasks into plan markdown
+2. **Code**: Read from active plan file if exists; otherwise compose from session context
+3. **Code + Plannotator**: If `~/.plannotator/history/` has a recent version, read it
+
+### 1.5b — Promote or Update
+
+4. Search for existing plan: `list_documents(query: "Plan: <ISSUE-ID>")`
+5. If exists: `update_document(id, content)` — append revision history entry
+6. If new: `create_document(title: "Plan: <ISSUE-ID> — <summary>", content, issue: "<id>")`
+7. Validate: `get_issue(includeRelations: true)` — confirm document attached
+8. Backlink: `create_comment(issueId, body: "Plan promoted: [title](url)\nReview: <plan-review-url>/plan/<doc-id>")`
+
+### 1.5c — Finalize Title
+
+9. `update_document(id, title: "Plan: <ISSUE-ID> — <outcome summary>")`
 
 ---
 
@@ -200,6 +228,65 @@ No action needed:
 
 ---
 
+## Phase 5: Handover
+
+Generate a structured handover prompt that enables the next session to pick up
+exactly where this one left off. This is the critical bridge between sessions —
+without it, the next session starts cold.
+
+### 5a — Gather Context
+
+Collect from the session:
+
+1. **What was accomplished**: Commits, PRs, Linear issues progressed, infrastructure deployed
+2. **What's pending**: Unfinished tasks, blocked items, things that need deploying/verifying
+3. **What was learned**: Key debugging insights, API quirks, architectural decisions made
+4. **What changed**: Files created/modified, config changes, workflow additions
+5. **Active state**: Current branch, uncommitted work, running deployments
+
+### 5b — Write Handover Prompt(s)
+
+Generate 1-3 handover prompts depending on session complexity. Each prompt should
+be a self-contained continuation instruction that a fresh session can act on
+immediately.
+
+**Template:**
+
+```markdown
+### Prompt [A/B/C]: [Focus Area]
+
+> **Continue from session [DATE].** [1-2 sentence summary of what was done.]
+>
+> **Immediate next steps:**
+> 1. [Concrete action with file paths / commands]
+> 2. [Concrete action with file paths / commands]
+>
+> **Context:** [Key facts the next session needs — entity IDs, version numbers,
+> branch names, API endpoints, error messages encountered]
+>
+> **Plan:** [Plan: <ISSUE-ID> — summary](linear-doc-url) | [Review](plan-review-url)
+>
+> **Verify:** [How to confirm the work succeeded]
+```
+
+**Rules:**
+- Each prompt must be actionable without reading the prior session transcript
+- Include specific file paths, Linear issue IDs, version numbers, branch names
+- Separate deploy/verify tasks from new feature work
+- If there are pending Supabase migrations, Edge Function deploys, or workflow
+  verifications, put those in the first prompt (they gate other work)
+- Reference memory files (`memory/*.md`) for detailed context instead of
+  repeating it inline
+
+### 5c — Persist
+
+1. Present the handover prompts to the user in the final report
+2. If the session produced significant architectural decisions or debugging
+   insights, verify they're captured in memory files (Phase 3 should have
+   handled this — double-check)
+
+---
+
 ## Final Report
 
 Present a single consolidated report combining all phases:
@@ -224,8 +311,8 @@ Present a single consolidated report combining all phases:
 - Applied: [count]
 - Deferred: [count]
 
-### Next Session
-[2-3 bullet points of recommended actions for the next session]
+### Handover
+[Handover prompts from Phase 5]
 ```
 
 ---
@@ -234,19 +321,25 @@ Present a single consolidated report combining all phases:
 
 ### Code Sessions (Claude Code / Cursor)
 - Full Phase 1 (commit, push, PR, typecheck)
+- Full Phase 1.5 (plan promotion to Linear)
 - Full Phase 2 (Linear normalization)
 - Full Phase 3 (memory)
 - Full Phase 4 (self-improvement)
+- Full Phase 5 (handover prompts)
 
 ### Cowork Sessions (Claude Desktop)
 - Skip Phase 1 (no filesystem access)
+- **Full Phase 1.5** (Plan Promotion — Cowork's primary persistence step)
 - Full Phase 2 (Linear normalization — primary focus)
 - Phase 3: memory updates via conversation summary only (no file writes)
 - Phase 4: findings noted for next Code session
+- Phase 5: handover prompts (conversational — cannot write to files)
 
 ### Context Budget Trigger (60%+)
 - Abbreviated Phase 1 (commit current work, no PR)
+- Phase 1.5: promote plan if exists (single `create_document` call)
 - Phase 2: status updates only (no detailed closing comments)
 - Phase 3: write critical memory only
 - Skip Phase 4
-- End with "Session split recommended — [summary of remaining work]"
+- Phase 5: single handover prompt covering remaining work
+- End with "Session split recommended — [handover prompt]"
