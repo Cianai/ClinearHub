@@ -26,7 +26,7 @@ When mentioning plugin files in **Linear issues, comments, or plan documents**, 
 |---------|--------|
 | Linear issue description | `[cowork-instructions.md](https://github.com/Cianai/ClinearHub/blob/main/packages/clinear-plugin/skills/clinearhub-workflow/references/cowork-instructions.md)` |
 | Linear comment | `See [cross-surface-references.md](https://github.com/Cianai/ClinearHub/blob/main/packages/clinear-plugin/skills/clinearhub-workflow/references/cross-surface-references.md) for formatting rules.` |
-| Plan document (Linear) | `[plan-format.md](https://github.com/Cianai/ClinearHub/blob/main/packages/clinear-plugin/skills/plan-persistence/references/plan-format.md)` |
+| Plan document (Linear) | `[plan-format.md](https://github.com/Cianai/ClinearHub/blob/main/packages/clinear-plugin/skills/_archived/plan-persistence/references/plan-format.md)` |
 | Code session output | `packages/clinear-plugin/skills/clinearhub-workflow/references/cowork-instructions.md` (local path, clickable in terminal) |
 
 **Rule:** Plain text file names (e.g., `cowork-instructions.md` without a link) are never acceptable in Linear-facing content. Always hyperlink.
@@ -164,7 +164,7 @@ Linear supports [native video embed](https://linear.app/docs/editor) — YouTube
 
 ## Cross-Skill References
 
-- **plan-persistence** — Plan Format Hyperlink Rules (specific to plan documents)
 - **issue-lifecycle** — Issue Content Quality section (references this file)
 - **clinearhub-workflow** — Cross-Surface References section (references this file)
 - **stakeholder-update** — Language Adaptation table (detailed audience templates)
+- **_archived/plan-persistence** — Historical: Plan Format Hyperlink Rules (specific to plan documents)

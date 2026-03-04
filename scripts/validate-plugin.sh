@@ -50,7 +50,7 @@ fi
 echo ""
 echo "--- Skills ---"
 SKILL_COUNT=0
-SKILL_DIRS=$(find "$PLUGIN_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+SKILL_DIRS=$(find "$PLUGIN_DIR/skills" -mindepth 1 -maxdepth 1 -type d -not -name '_archived' 2>/dev/null | sort)
 
 if [ -z "$SKILL_DIRS" ]; then
   error "No skill directories found in $PLUGIN_DIR/skills/"

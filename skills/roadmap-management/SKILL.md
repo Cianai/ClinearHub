@@ -121,6 +121,5 @@ save_status_update(
 
 ## Cross-Skill References
 
-- **clinearhub-workflow** — Overall 6-step flow, sprint planning context
-- **plan-persistence** — Plans may reference initiative context
+- **clinearhub-workflow** — Overall 6-phase pipeline, sprint planning context
 - **issue-lifecycle** — How initiative-linked issues move through statuses

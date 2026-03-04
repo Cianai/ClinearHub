@@ -1,8 +1,8 @@
 # Connectors & Configuration Surfaces
 
-> **Pipeline Architecture:** [Pipeline Architecture: Spec-to-Ship](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) — canonical 10-phase pipeline reference (Linear Document, ClinearHub project).
+> **Pipeline Architecture:** [Pipeline Architecture: Spec-to-Ship](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) — canonical 6-phase pipeline reference (Linear Document, ClinearHub project). v2.0: upstream spec creation (ChatPRD), GitHub Agentic Workflows for implementation, ClinearHub for interactive business layer.
 
-ClinearHub's stack spans 4 distinct configuration surfaces. Each surface serves different agents with different tools.
+ClinearHub's stack spans 5 distinct configuration surfaces. Each surface serves different agents with different tools.
 
 ## Surface A: Global OAuth Connectors — Cowork & Desktop Sessions
 
@@ -39,6 +39,7 @@ ClinearHub does **not** bundle its own MCP servers (`.mcp.json` is empty). All c
 | Google Drive | Settings > Connectors | Document storage and sharing |
 | HuggingFace | Settings > Connectors | ML model discovery and evaluation |
 | Railway | CLI (`~/.mcp.json`) | Deployment platform (no OAuth connector available) |
+| ChatPRD | CLI (`~/.mcp.json`) | Spec querying during Claude Code sessions |
 
 ## Surface B: Linear Agents & Integrations
 
@@ -60,7 +61,7 @@ Prompt template passes issue ID, description, comments, updates, linked referenc
 ### Triage Rules (Settings > Team > Triage)
 
 1. `spec:draft` label → ChatPRD (spec enrichment with personas)
-2. `auto:implement` label → Codex (implementation, creates PR)
+2. `auto:implement` label → Codex (implementation, creates PR) — also triggers gh-aw via Linear↔GitHub two-way sync
 
 ### Native Integrations (Settings > Integrations)
 
@@ -96,6 +97,7 @@ Configuration lives in the repo's `.github/` directory and GitHub Settings.
 | Workflow | Purpose |
 |---------|---------|
 | `ci.yml` | Lint + typecheck + build on every push/PR |
+| `implement-issue.md` | **gh-aw:** Autonomous implementation of `auto:implement` labeled issues |
 | `auto-merge-bots.yml` | Zero-touch loop: bot PR → auto-merge (self-contained) |
 | `post-merge-reconciliation.yml` | **Post-merge 3-tier cascade:** tick ACs, post evidence, update milestone/initiative, sync README/releases |
 | `dependabot-linear.yml` | Bridge Dependabot PRs → Linear issues (majors) + release log |
@@ -131,7 +133,7 @@ Configuration for interactive dev sessions (Claude Code, Cursor IDE).
 | `Vercel` | Deploy, logs, setup | Installed |
 | `claude-md-management` | CLAUDE.md auditor | Install |
 
-**Not installed (cherry-pick into ClinearHub instead):** product-management (merge into spec-enrichment + stakeholder-update), customer-support (merge into Phase 2c customer-intelligence + knowledge-management).
+**Not installed (cherry-pick into ClinearHub instead):** product-management (merge into stakeholder-update), customer-support (merge into knowledge-management).
 
 **Skipped:** productivity, data, operations, finance, legal, marketing, HR, sales, enterprise-search, bio-research.
 
@@ -225,6 +227,7 @@ Deployment automation via GitHub integration (Surface C).
 | `/roadmap-update` | Linear (R/W) | — | — |
 | `/sync-status` | Linear (R/W), GitHub (R/W) | Vercel (R), Sentry (R) | — |
 | `/sync-docs` | — | — | — (file-only) |
+| `/research` | Linear (W) | Semantic Scholar (R), arXiv (R), OpenAlex (R) | Perplexity (R), Zotero (R), HuggingFace (R) |
 
 **Legend:** R = read, W = write, R/W = both.
 
@@ -232,25 +235,40 @@ Deployment automation via GitHub integration (Surface C).
 
 ```
 Inbound (→ Linear):
+  ChatPRD → Linear issues (spec creation via "Open in → Linear Issue" or @chatprd agent)
   Sentry errors → Linear issues (auto-create)
   Linear Asks (email/Slack) → Linear issues
   GitHub PR merge → Linear issue Done (via "Closes CIA-XXX")
   GitHub PR open → Linear issue In Progress
   ClinearHubBot → evidence comments, ticked ACs, milestone/initiative updates (post-merge)
 
-Outbound (Linear →):
-  spec:draft label → ChatPRD enrichment
-  auto:implement label → Codex implementation
+Outbound (Linear → GitHub, via two-way sync):
+  auto:implement label → GitHub issue (two-way sync) → gh-aw / Copilot Coding Agent
+  spec:draft label → ChatPRD enrichment (Linear triage rule)
   Issue context → v0/Codex/Cursor via coding tools button
 
 Bidirectional:
-  Linear ↔ GitHub (PR comments sync, status transitions)
+  Linear ↔ GitHub (two-way issue sync + PR comments + status transitions)
   Linear ↔ Figma (issue↔design linking)
+
+Upstream (ChatPRD → everything):
+  ChatPRD MCP connectors ← Linear, GitHub, Granola, Google Drive (context sources)
+  ChatPRD → Linear issues (primary output)
+  ChatPRD → Google Drive (doc export)
+  ChatPRD MCP server → Claude Code (spec querying)
+
+Research Pipeline (→ Supabase → Alteri App):
+  weekly-research.md (GAW) → paper-search MCP → Supabase research_papers (weekly)
+  daily-paper-digest.md (GAW) → HF Daily Papers + arXiv → Supabase research_papers (daily)
+  /research (Cowork) → Semantic Scholar/arXiv/OpenAlex → Supabase research_papers (on-demand)
+  discover-connections (Edge Function) → research_connections (on-demand)
+  Supabase research_findings → Alteri /api/compare RAG injection (on each request)
+  Supabase → Obsidian vault (01-Projects/Claudian/Alteri/Research/) via export script
+  Zotero (alteri tag) → Supabase research_papers (weekly sync)
 
 Agent Identity (ClinearHubBot):
   GitHub Actions → commits/comments as ClinearHubBot (GitHub App)
   Linear comments → createAsUser: "ClinearHubBot"
-  Plan documents → Author field in header (API doesn't support createAsUser for docs)
 ```
 
 ### Graceful Degradation

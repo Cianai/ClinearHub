@@ -1,94 +1,151 @@
 ---
 name: clinearhub-workflow
 description: |
-  Core ClinearHub methodology: the 6-step flow from ideation through delivery, agent pipeline, triage protocol, label system, execution modes, and duplicate detection. Use when discussing workflow, process, methodology, sprint planning context, how issues move through the pipeline, what labels to apply, how agents are dispatched, triage rules, routing decisions, estimation, scope discipline, WIP limits, or any question about how ClinearHub works end-to-end. Also triggers for questions about ChatPRD, Codex, or Copilot dispatch.
+  Core ClinearHub methodology: the 6-phase pipeline from spec creation through business review, agent pipeline, triage protocol, label system, execution modes, and duplicate detection. Use when discussing workflow, process, methodology, sprint planning context, how issues move through the pipeline, what labels to apply, how agents are dispatched, triage rules, routing decisions, estimation, scope discipline, WIP limits, or any question about how ClinearHub works end-to-end. Also triggers for questions about ChatPRD, gh-aw, Copilot, or agent dispatch.
 ---
 
-# ClinearHub Workflow
+# ClinearHub Workflow (v2.0)
 
-ClinearHub (Claude + Linear + GitHub) is a Cowork-first PM methodology. Cowork and Linear are the only human-interactive surfaces. Four autonomous agents handle the spec-to-ship loop via Linear triage rules.
+ClinearHub (Claude + Linear + GitHub) is a Cowork-first PM methodology. Spec creation happens upstream in ChatPRD. Autonomous implementation happens via GitHub Agentic Workflows (gh-aw) and Copilot Coding Agent. ClinearHub handles the interactive business layer: triage, roadmap, incidents, analytics, and review.
 
 ## The Pipeline
 
 ```
-1. Ideation (Cowork) → 2. Spec Enrichment (ChatPRD) → 3. Implementation (Codex)
-→ 4. Review + Merge (GitHub) → 4.5. Reconciliation (ClinearHubBot) → 5. PM Review (Cowork)
-→ 6. Customer Loop (Cowork)
+Human ──────────────────────────────────────── Human
+  │                                               ▲
+  ▼                                               │
+Phase 1: SPEC (ChatPRD)               Phase 6: REVIEW (Cowork)
+  │                                               ▲
+  ▼                                               │
+Phase 2: TRIAGE (Cowork)              Phase 5: RECONCILE (GitHub Actions)
+  │                                               ▲
+  ▼                                               │
+Phase 3: IMPLEMENT (GitHub Agents) ──► Phase 4: MERGE (GitHub CI)
 ```
 
-### Step 1: Ideation (Cowork)
+**Human touches Phase 1 (write spec) and Phase 6 (review outcomes). Everything else is autonomous.**
 
-Human drafts the idea in Cowork. Creates a Linear issue with `spec:draft` label.
+### Phase 1: Spec Creation (ChatPRD)
 
-**Inputs:** Voice memos, cowork sessions, customer feedback, meeting notes (Granola), direct input.
+**Actor:** Human + ChatPRD AI
+**Surface:** ChatPRD (web app)
 
-**Outputs:** Linear issue with title (verb-first), problem statement, initial acceptance criteria, `spec:draft` label, `type:*` label, project assignment.
+ChatPRD pulls context from all sources via MCP connectors:
+- **Linear** (MCP): existing issues, sprint context, project state
+- **GitHub** (MCP): repo structure, open PRs, code patterns
+- **Granola** (MCP): meeting notes, decisions, action items
+- **Google Drive** (OAuth): existing docs, research, customer data
 
-**Tools:** Linear (create issue), Notion (context lookup), Google Calendar (meeting prep).
+ChatPRD creates an enriched spec with acceptance criteria, user stories, and technical context.
 
-### Step 2: Spec Enrichment (ChatPRD)
+**Output destinations:**
+1. **Linear issue** — via "Open in → Linear Issue" or @chatprd agent enriches directly
+2. **Google Drive** — export as Google Doc for shareable reference
+3. **ChatPRD itself** — queryable via ChatPRD MCP server
 
-Linear triage rule triggers ChatPRD when `spec:draft` is applied. ChatPRD enriches the spec using its connectors (Linear, Notion, GitHub, Google Drive, Granola).
+### Phase 2: Triage & Planning (Cowork)
 
-**ChatPRD enrichment:**
-- Applies business strategy personas (Working Backwards, Five Whys, Pre-Mortem, Layman Clarity)
-- Refines acceptance criteria
-- Creates child sub-issues with `auto:implement` label
-- Each sub-issue enters Linear Triage as a fresh item
+**Actor:** Human + ClinearHub plugin + Triage Intelligence
+**Surface:** Claude Desktop → Cowork tab
 
-**Human gate:** Review enriched spec. Approve by moving parent to `spec:ready`. Reject by returning to `spec:draft` with feedback comment.
+**Triage Intelligence (TI)** auto-processes new issues within 1-4 minutes:
+- **Auto-applies:** team (CIA/ALT/SWX), project, labels (Type, Exec, Spec, Context)
+- **Shows suggestions:** assignee, duplicates, related issues
+- **Triage rules** fire after TI: urgent bugs auto-dispatch to Copilot
 
-### Step 3: Implementation (Codex)
+Human reviews TI results in Cowork, then confirms or corrects using **triage templates**:
 
-Linear triage rule triggers Codex when `auto:implement` is applied to sub-issues. Codex reads the issue description, creates a branch, implements, and opens a PR.
+**Triage templates** (apply via Template dropdown — preserves ChatPRD description, sets metadata only):
 
-**PR requirements:** Body includes `Closes CIA-XXX`. Branch follows `CIA-XXX-slug` pattern.
+| Template | Labels | Status | Priority | Est | Delegate |
+|----------|--------|--------|----------|-----|----------|
+| Auto: Quick | `type:chore`, `exec:quick`, `auto:implement`, `ctx:autonomous`, `spec:ready` | Todo | Medium | 1 | Copilot |
+| Auto: Feature | `type:feature`, `exec:quick`, `auto:implement`, `ctx:autonomous`, `spec:ready` | Todo | Medium | 2 | Copilot |
+| Auto: TDD | `type:feature`, `exec:tdd`, `auto:implement`, `ctx:autonomous`, `spec:ready` | Todo | Medium | 3 | Claude |
+| Auto: Bug | `type:bug`, `exec:quick`, `auto:implement`, `ctx:autonomous`, `spec:ready` | Todo | High | 1 | Copilot |
+| Pair Session | `type:feature`, `exec:pair`, `ctx:interactive`, `spec:ready` | Todo | Medium | 5 | — |
 
-### Step 4: Review + Merge (GitHub)
+**Additional manual steps** (if needed):
+- Correct TI team/project/label suggestions if wrong
+- Decompose into sub-issues
+- Adjust priority, estimate, or assignee from template defaults
+- Apply `Dispatch/auto:implement` label to trigger Phase 3 (already set by Auto: templates)
 
-GitHub Copilot auto-reviews via `copilot-auto-review` ruleset. CI runs. Auto-merge enabled via `gh pr merge --squash --auto --delete-branch`.
+**Quick Capture** template: for rapid issue creation from Linear iOS app (typing/voice dictation). Sets `spec:draft` + `source:direct`, Status: Triage. Intended for later enrichment by @chatprd agent or Cowork triage.
 
-**Zero-touch loop:** Push → PR → Copilot review → CI → Auto-merge → Linear auto-close (via `Closes CIA-XXX`).
+**Context sources:**
+- From project (via "Create task with context"): project instructions + static reference docs
+- From MCP connectors (live data): Linear, GitHub, Sentry, PostHog
+- Enriched specs live in Linear issues (from ChatPRD in Phase 1)
 
-### Step 4.5: Reconciliation (ClinearHubBot)
+### Phase 3: Implementation (GitHub Agents)
 
-Fully automated — no human interaction. The `post-merge-reconciliation.yml` GitHub Action fires on PR merge and runs a 3-tier cascade:
+**Actor:** Autonomous coding agents
+**Surface:** GitHub (via Linear ↔ GitHub two-way sync)
+
+Linear two-way sync makes issues with `auto:implement` appear as GitHub issues. Agents pick them up based on exec mode:
+
+| Exec Mode | Agent | Mechanism |
+|-----------|-------|-----------|
+| `exec:quick` | Copilot Coding Agent | Assign to `@github` → WIP PR |
+| `exec:tdd` | gh-aw + Claude engine | `.github/workflows/implement-issue.md` |
+| `exec:pair` | Claude Code Desktop | Human uses preview + review |
+| `exec:checkpoint` | gh-aw + Copilot | Workflow with approval gates |
+| `exec:swarm` | Multiple gh-aw workflows | Parallel dispatch across sub-issues |
+
+**PR requirements:** Body includes `Closes CIA-XXX` (or `ALT-XXX`/`SWX-XXX`).
+
+### Phase 4: Review + Merge (GitHub)
+
+**Actor:** Copilot (auto-review) + CI + optionally human
+**Surface:** GitHub + Claude Code Desktop (for complex PRs)
+
+- `copilot-auto-review` ruleset: auto-requests review on push
+- `ci.yml`: lint + typecheck + build
+- `auto-merge-bots.yml`: bot PR → auto-merge when CI green
+- Claude Code Desktop: code review feature + CI auto-fix for complex PRs
+
+**Zero-touch loop:** Agent PR → Copilot review → CI → Auto-merge → Linear auto-close.
+
+### Phase 5: Post-Merge Reconciliation (GitHub Actions)
+
+**Actor:** ClinearHubBot (GitHub App)
+**Surface:** GitHub Actions → Linear API
+
+`post-merge-reconciliation.yml` fires on PR merge, runs 3-tier cascade:
 
 | Tier | What | When |
 |------|------|------|
-| **1: Issue Reconciliation** | Tick [x] ACs on issue + plan, post evidence comment with quality scoring | Always |
-| **2: Parent & Project Cascade** | Check all siblings Done → post on parent (Phase 8), update milestone/initiative progress | If parent/milestone exists |
-| **3: Documentation Sync** | Update GitHub README CLH section, append to release draft | If CLH markers exist |
+| **1: Issue Reconciliation** | Tick [x] ACs, post evidence comment with quality scoring | Always |
+| **2: Parent & Project Cascade** | Check all siblings Done → post on parent, update milestone progress | If parent/milestone exists |
+| **3: Documentation Sync** | Update GitHub README CLH section | If CLH markers exist |
 
-This bridges the gap between GitHub merge and Linear issue quality. Without reconciliation, `Closes CIA-XXX` only changes status to Done — ACs remain unticked, no evidence is posted, and parent issues don't know their children are complete.
+### Phase 6: Business Review (Cowork)
 
-For non-PR closures (spikes, manual completions), `/plan --finalize` performs the same checks as part of its session close protocol.
+**Actor:** Human
+**Surface:** Claude Desktop → Cowork tab
 
-### Step 5: PM Review (Cowork)
-
-Human reviews completed work in Cowork. Checks PostHog analytics, Vercel deploy preview, Sentry error rates.
-
-**Verification sources:** PostHog (feature adoption, errors), Vercel (deploy status, preview URL), Sentry (new errors, regressions).
-
-### Step 6: Customer Loop (Cowork)
-
-Communicate outcomes to customers via Linear Customer Requests, Notion CRM updates, email (Gmail).
-
-**Tools:** Linear (close Customer Requests), Notion (update client profiles), Gmail (customer communication).
+Human returns when notified (Phase 8 comment = "all sub-issues complete"):
+- Review outcomes, verify business acceptance criteria
+- `/stakeholder-update` for status communication
+- `/analyze` for PostHog data on feature adoption
+- Plan next cycle
 
 ## Agent Pipeline
 
 | Agent | Surface | Trigger | Input | Output |
 |-------|---------|---------|-------|--------|
-| ChatPRD | Linear | `spec:draft` label | Issue with problem statement | Enriched spec + sub-issues with `auto:implement` |
-| Codex | Linear | `auto:implement` label | Sub-issue with ACs | Branch + PR with `Closes CIA-XXX` |
-| Copilot | GitHub | PR opened | PR diff | Review comments, approval |
-| ClinearHubBot | GitHub | PR merged | PR + Linear issue | Evidence comment, ticked ACs, project cascade |
+| ChatPRD | ChatPRD / Linear | Human / `spec:draft` label | Problem statement + context | Enriched spec + sub-issues |
+| gh-aw / Copilot Agent | GitHub | `auto:implement` label (via two-way sync) | GitHub issue with ACs | Branch + PR with `Closes CIA-XXX` |
+| Copilot Review | GitHub | PR opened | PR diff | Review comments, approval |
+| ClinearHubBot | GitHub | PR merged | PR + Linear issue | Evidence comment, ticked ACs, cascade |
 | Sentry | Sentry | Production error | Error event | Linear issue with stack trace |
 
 **Dispatch mechanisms:**
-- **ChatPRD + Codex:** Linear triage rules (Settings > Team > Triage)
-- **Copilot:** GitHub `copilot-auto-review` ruleset
+- **ChatPRD:** ChatPRD MCP connectors + Linear @chatprd agent + `spec:draft` triage rule
+- **gh-aw:** `.github/workflows/implement-issue.md` triggered by `auto:implement` label on GitHub issues
+- **Copilot Coding Agent:** Assign GitHub issue to `@github` (for `exec:quick`)
+- **Copilot Review:** GitHub `copilot-auto-review` ruleset
 - **ClinearHubBot:** `post-merge-reconciliation.yml` GitHub Action
 - **Sentry:** Sentry → Linear native integration
 
@@ -96,13 +153,18 @@ Communicate outcomes to customers via Linear Customer Requests, Notion CRM updat
 
 > See [references/triage-rules.md](references/triage-rules.md) for the full triage rule configuration.
 
-Daily triage sweep of the Linear Triage view (`G T`). Process:
+Daily triage sweep of the Linear Triage view (`G T`). Triage Intelligence auto-applies team, project, and labels within 1-4 minutes of issue creation. Human process:
 
 1. **SLA first** — Address issues with approaching SLA breach (`slaBreachesAt` field).
-2. **Label** — Apply `type:*` (required), `spec:*`, `exec:*`, `ctx:*` as appropriate.
-3. **Route** — Apply dispatch labels (`spec:draft` for ChatPRD, `auto:implement` for Codex) or assign to human.
-4. **Dedup** — Check for existing issues covering the same scope before creating new ones.
-5. **Estimate** — Apply Fibonacci estimate (1, 2, 3, 5, 8, 13) based on complexity.
+2. **Review TI** — Check auto-applied team, project, and labels. Correct if wrong.
+3. **Label** — Confirm or adjust labels via label groups (single-select enforcement): `Type/*` (required), `Spec/*`, `Exec/*`, `Context/*`.
+4. **Route** — Apply dispatch labels (`spec:draft` for ChatPRD, `auto:implement` for GitHub agents) or assign to human.
+5. **Dedup** — TI flags potential duplicates. Verify before creating new issues.
+6. **Estimate** — Apply Fibonacci estimate (1, 2, 3, 5, 8, 13) based on complexity.
+
+**Triage rules** (fire after TI, before human review):
+- `type:bug` + Urgent → auto-dispatch to Copilot (status: Todo, label: `exec:quick`)
+- `type:bug` + High → set status: Todo, label: `exec:quick`
 
 **WIP limit:** Maximum 5 issues In Progress across all agents and humans.
 
@@ -110,15 +172,15 @@ Daily triage sweep of the Linear Triage view (`G T`). Process:
 
 > See [references/label-taxonomy.md](references/label-taxonomy.md) for the complete label inventory with descriptions.
 
-**Required on every issue:** Exactly one `type:*` label.
+**Required on every issue:** Exactly one `Type/*` label. Labels use Linear label groups (single-select per group).
 
-| Category | Labels | Purpose |
-|----------|--------|---------|
+| Group | Labels | Purpose |
+|-------|--------|---------|
 | Type | `type:feature`, `type:bug`, `type:chore`, `type:spike` | What kind of work |
 | Spec | `spec:draft` → `spec:ready` → `spec:review` → `spec:implementing` → `spec:complete` | Spec lifecycle |
-| Execution | `exec:quick`, `exec:tdd`, `exec:pair`, `exec:checkpoint`, `exec:swarm` | How to implement |
+| Exec | `exec:quick`, `exec:tdd`, `exec:pair`, `exec:checkpoint`, `exec:swarm` | How to implement (routes to agent) |
 | Context | `ctx:interactive`, `ctx:autonomous`, `ctx:review`, `ctx:human` | Who/where is working |
-| Auto | `auto:implement` | Triggers Codex dispatch |
+| Dispatch | `auto:implement` | Triggers gh-aw / Copilot Coding Agent |
 
 ## Execution Modes
 
@@ -126,13 +188,13 @@ Daily triage sweep of the Linear Triage view (`G T`). Process:
 
 Quick reference:
 
-| Mode | When | Estimate |
-|------|------|----------|
-| `exec:quick` | Small, obvious changes | 1-2pt |
-| `exec:tdd` | Testable AC, moderate scope | 3pt |
-| `exec:pair` | Uncertain scope, needs human | 5pt |
-| `exec:checkpoint` | High-risk, multi-milestone | 8pt |
-| `exec:swarm` | 5+ independent parallel tasks | 5-8pt |
+| Mode | When | Agent | Estimate |
+|------|------|-------|----------|
+| `exec:quick` | Small, obvious changes | Copilot Coding Agent | 1-2pt |
+| `exec:tdd` | Testable AC, moderate scope | gh-aw + Claude | 3pt |
+| `exec:pair` | Uncertain scope, needs human | Claude Code Desktop | 5pt |
+| `exec:checkpoint` | High-risk, multi-milestone | gh-aw + approval gates | 8pt |
+| `exec:swarm` | 5+ independent parallel tasks | Multiple gh-aw workflows | 5-8pt |
 
 **Estimate mapping:** 1-2pt = quick, 3pt = tdd, 5pt = tdd/pair, 8pt = pair/checkpoint, 13pt = checkpoint (decompose first).
 
@@ -156,10 +218,15 @@ Before creating any issue, search Linear for existing coverage:
 
 > See [references/cross-surface-references.md](references/cross-surface-references.md) for the full convention.
 
-Every file reference in Linear issues, comments, and session output must be a clickable hyperlink to its source. Every CIA-XXX mention must be a clickable markdown link. Language must be adapted to the target surface (GitHub = technical, Linear = process-focused, Cowork = conversational, Stakeholder = strategic). See the reference file for patterns, examples, and operational discipline rules.
+Every file reference in Linear issues, comments, and session output must be a clickable hyperlink to its source. Every CIA-XXX mention must be a clickable markdown link. Language must be adapted to the target surface (GitHub = technical, Linear = process-focused, Cowork = conversational, Stakeholder = strategic).
 
 ## Cross-Skill References
 
-- **spec-enrichment** — Governs Step 2 (PR/FAQ templates, ChatPRD personas, AC writing)
 - **issue-lifecycle** — Governs status transitions, closure, session close protocol, issue content quality
-- **plan-persistence** — Governs plan lifecycle, Step 4.5 reconciliation, agent identity, multimedia attachments
+- **incident-response** — Governs Sentry→Linear error pipeline, RCA protocol
+- **data-analytics** — Governs PostHog queries, monitoring alerts
+- **deployment-verification** — Governs deploy checks, zero-touch CI loop
+- **roadmap-management** — Governs initiative/milestone tracking
+- **task-management** — Governs standups, daily workflow
+- **_archived/spec-enrichment** — Historical: PR/FAQ templates, ChatPRD personas (now handled by ChatPRD directly)
+- **_archived/plan-persistence** — Historical: plan lifecycle management (now via ChatPRD MCP + Linear documents)

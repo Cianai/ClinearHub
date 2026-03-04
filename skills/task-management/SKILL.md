@@ -1,12 +1,12 @@
 ---
 name: task-management
 description: |
-  Linear-native task management for daily standups and issue critique. Use when discussing daily standup summaries, what was done yesterday, what's planned today, blockers, issue quality critique, WIP limits, cycle progress, velocity, burndown, carry-forward items, or any question about day-to-day task tracking and coordination. For session handoff and context preservation, see the plan-persistence skill.
+  Linear-native task management for daily standups and issue critique. Use when discussing daily standup summaries, what was done yesterday, what's planned today, blockers, issue quality critique, WIP limits, cycle progress, velocity, burndown, carry-forward items, or any question about day-to-day task tracking and coordination.
 ---
 
 # Task Management
 
-Daily operational coordination using Linear as the single source of truth. Covers two workflows: standup (daily sync) and critique (issue quality). Session handoff is handled by the plan-persistence skill via `/plan --finalize`.
+Daily operational coordination using Linear as the single source of truth. Covers two workflows: standup (daily sync) and critique (issue quality).
 
 ## Standup
 

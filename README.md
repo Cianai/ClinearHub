@@ -1,75 +1,74 @@
 # ClinearHub
 
-Cowork-first PM methodology plugin for Claudian. ClinearHub (Claude + Linear + GitHub) consolidates product management, engineering ops, design, data analytics, customer support, and operations into one opinionated plugin built for our stack.
+Cowork-first PM methodology plugin for Claudian. ClinearHub (Claude + Linear + GitHub) handles triage, roadmap, incident response, analytics, and deployment verification — the interactive business workflow layer. Spec creation happens upstream in ChatPRD; autonomous implementation happens downstream via GitHub Agentic Workflows.
 
-## Stack (Hardcoded — No Placeholders)
+## Architecture (v2.0)
+
+```
+Phase 1: SPEC (ChatPRD)          → Phase 2: TRIAGE (Cowork + ClinearHub)
+Phase 3: IMPLEMENT (GitHub gh-aw) → Phase 4: MERGE (GitHub CI)
+Phase 5: RECONCILE (GitHub Actions) → Phase 6: REVIEW (Cowork + ClinearHub)
+```
+
+Human touches Phase 1 (write spec) and Phase 6 (review outcomes). Everything else is autonomous.
+
+## Stack
 
 | Category | Tool | Transport |
 |----------|------|-----------|
 | Project tracker | Linear | OAuth Connector |
 | Source control | GitHub | OAuth Connector |
-| CRM | Linear Customer Requests + Notion | OAuth Connector |
-| Knowledge base | Notion + GitHub | OAuth Connector |
-| Design | Figma + Magic Patterns | OAuth Connector |
+| Spec creation | ChatPRD | MCP Server (Claude Code) / Linear Agent |
+| Implementation | GitHub Agentic Workflows (gh-aw) | GitHub Actions |
+| Code review | GitHub Copilot | GitHub Ruleset |
 | Analytics | PostHog | Desktop Connector |
 | Error tracking | Sentry | OAuth Connector |
 | CI/CD | GitHub Actions | OAuth Connector |
 | Deployment | Vercel + Railway | Desktop Connector / CLI |
+| Design | Figma + Magic Patterns | OAuth Connector |
+| CRM | Linear Customer Requests + Notion | OAuth Connector |
 | Email | Gmail | OAuth Connector |
 | Calendar | Google Calendar | OAuth Connector |
 | Meetings | Granola | Desktop Connector |
-| Spec enrichment | ChatPRD | Linear Agent |
 | Diagrams | Mermaid Chart | Desktop Connector |
 
 ## Agent Pipeline
 
-Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
+Agents handle the spec-to-ship loop autonomously:
 
-1. **ChatPRD** — Spec enrichment. Triggered by `spec:draft` label. Enriches specs with personas, creates sub-issues with `auto:implement`.
-2. **Codex** — Implementation. Triggered by `auto:implement` label. Implements sub-issues, creates PRs.
+1. **ChatPRD** — Spec creation + enrichment. Triggered upstream by human or by `spec:draft` label in Linear. Pulls context from Linear, GitHub, Granola, Google Drive.
+2. **gh-aw / Copilot Coding Agent** — Implementation. Triggered by `auto:implement` label via Linear↔GitHub two-way sync. Creates branch + PR.
 3. **GitHub Copilot** — Code review. Auto-triggered on PR via `copilot-auto-review` ruleset.
-4. **Sentry** — Error tracking. Auto-creates Linear issues from production errors.
+4. **ClinearHubBot** — Post-merge reconciliation. Ticks ACs, posts evidence, cascades to parent/milestone.
+5. **Sentry** — Error tracking. Auto-creates Linear issues from production errors.
 
 ## Components
 
-### Reference Skills (9) — auto-loaded by model for context
+### Reference Skills (8) — auto-loaded by model for context
 
 | Skill | Purpose |
 |-------|---------|
-| `clinearhub-workflow` | Core 6-step methodology, triage rules, label taxonomy |
-| `spec-enrichment` | PR/FAQ + PRD templates, acceptance criteria, ChatPRD personas |
+| `clinearhub-workflow` | Core 6-phase pipeline, triage rules, label taxonomy, agent dispatch |
 | `issue-lifecycle` | Status transitions, ownership boundaries, closure protocol |
 | `incident-response` | Sentry→Linear error pipeline, triage, severity classification, RCA |
 | `task-management` | Daily standups, issue critique |
 | `deployment-verification` | Vercel + Railway deploy checks, Supabase env sync, zero-touch loop |
 | `data-analytics` | PostHog analytics, monitoring, data warehouse, notebooks |
-| `plan-persistence` | Session plan lifecycle — promote to Linear Documents, versioning, finalize |
 | `roadmap-management` | Strategic roadmap via Linear Initiatives + Milestones, Now/Next/Later |
+| `research-intelligence` | Research data pipeline, paper ingestion, RAG, Supabase pgvector |
 
-### Slash Commands (15) — user-invoked via `/<name>`
+### Archived Skills (3) — in `skills/_archived/`, kept for reference
 
-| Command | Description |
-|---------|-------------|
-| `/write-spec` | Guided spec creation, push to Linear with `spec:draft` |
-| `/triage` | Pull Linear Triage inbox, categorize, apply labels, route |
-| `/stakeholder-update` | Multi-source status update with audience adaptation (exec, team, customer, board) |
-| `/decompose` | Spec to sub-issues with `auto:implement` label |
-| `/sprint-planning` | Cycle review, velocity analysis, capacity table, sprint goal, stretch items |
-| `/weekly-brief` | Cross-project digest: Linear + PostHog + Sentry + Vercel + GCal |
-| `/incident` | Triage production errors, classify severity, perform RCA, route fixes |
-| `/critique` | Review issue quality before agent dispatch |
-| `/deploy-checklist` | Pre/post-deploy verification for Vercel and Railway deployments |
-| `/analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
-| `/verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
-| `/sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
-| `/plan` | Manage session plans — promote, review, list, index, finalize |
-| `/roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
-| `/sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
-### Action Skills (15) — user-invoked via `/clinearhub:<name>`
+| Skill | Reason Archived | Replacement |
+|-------|-----------------|-------------|
+| `spec-enrichment` | ChatPRD handles spec creation upstream | ChatPRD + @chatprd Linear agent |
+| `plan-persistence` | Specs live in ChatPRD/Linear, not plugin-managed | ChatPRD MCP + Linear documents |
+| `discovery-digest` | `dependency-monitor.yml` handles this in GitHub Actions | Existing workflow |
+
+### Action Skills (13) — user-invoked via `/clinearhub:<name>`
 
 | Skill | Description |
 |-------|-------------|
-| `write-spec` | Guided spec creation, push to Linear with `spec:draft` |
 | `triage` | Pull Linear Triage inbox, categorize, apply labels, route |
 | `stakeholder-update` | Multi-source status update with audience adaptation (exec, team, customer, board) |
 | `decompose` | Spec to sub-issues with `auto:implement` label |
@@ -81,9 +80,9 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 | `analyze` | Analyze product data from PostHog using HogQL, funnels, notebooks |
 | `verify` | Post-merge outcome validation — synthesize all AI + agent work for human review |
 | `sync-docs` | Check and sync plugin reference files with external targets (Linear UI, Desktop) |
-| `plan` | Manage session plans — promote, review, list, index, finalize |
 | `roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
 | `sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
+| `research` | Ad-hoc literature search, scoring, Supabase ingestion, Linear issue creation |
 
 ### Query Skills (2) — auto-invocable by model
 
@@ -91,13 +90,6 @@ Four agents handle the spec-to-ship loop autonomously via Linear triage rules:
 |-------|-------------|
 | `update` | Sync/digest from all sources, duplicate detection |
 | `standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
-
-### Query Commands (2) — auto-invocable by model
-
-| Command | Description |
-|---------|-------------|
-| `/update` | Sync/digest from all sources, duplicate detection |
-| `/standup` | Daily standup summary from Linear + Sentry + Vercel + PostHog |
 
 ## Installation
 
@@ -181,9 +173,10 @@ Core connectors are required — commands fail without them. Enhanced connectors
 
 ### Linear Configuration
 
-- **Team:** Claudian (CIA)
-- **Triage Rules:** Rule 1: `spec:draft` → ChatPRD. Rule 2: `auto:implement` → Codex.
-- **Labels:** Workspace-level labels (type, spec, exec, ctx, research, template, origin, auto)
+- **Team:** Claudian (CIA), sub-teams: Alteri (ALT), SoilWorx (SWX)
+- **Triage Intelligence:** Auto-applies team, project, and labels. See [`linear-manual-config.md`](docs/linear-manual-config.md) for UI-only settings.
+- **Triage Rules:** Bug routing (urgent/high → auto-dispatch to Copilot)
+- **Labels:** Workspace-level labels (type, spec, exec, ctx, research, template, source, auto)
 - **Full reference:** [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md)
 
 ### Secrets (Doppler)
@@ -207,26 +200,27 @@ See [CONNECTORS.md](CONNECTORS.md) for the full 4-surface configuration guide:
 
 | Reference | What | Link |
 |-----------|------|------|
-| Pipeline Architecture | Canonical 10-phase spec-to-ship pipeline | [Linear Document](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) |
+| Pipeline Architecture | 6-phase spec-to-ship pipeline (v2.0) | [Linear Document](linear://claudian/document/pipeline-architecture-spec-to-ship-37416e6d306f) |
 | CONNECTORS.md | 4-surface configuration guide | [CONNECTORS.md](CONNECTORS.md) |
 | Agent Guidance | Text for Linear Settings > Team > Agents | [`linear-agent-config.md`](skills/clinearhub-workflow/references/linear-agent-config.md) |
 | Cowork Instructions | Text for Claude Desktop > Settings > Instructions | [`cowork-instructions.md`](skills/clinearhub-workflow/references/cowork-instructions.md) |
 | Triage Rules | Triage protocol, Sentry routing, Phase 8 automation | [`triage-rules.md`](skills/clinearhub-workflow/references/triage-rules.md) |
 | Label Taxonomy | All workspace labels with rules | [`label-taxonomy.md`](skills/clinearhub-workflow/references/label-taxonomy.md) |
 | Execution Modes | quick/tdd/pair/checkpoint/swarm/spike | [`execution-modes.md`](skills/clinearhub-workflow/references/execution-modes.md) |
-| ChatPRD Personas | Working Backwards, Five Whys, Pre-Mortem, Layman Clarity | [`chatprd-personas.md`](skills/spec-enrichment/references/chatprd-personas.md) |
-| PR/FAQ Templates | 4 spec templates (feature, infra, research, quick) | [`prfaq-templates.md`](skills/spec-enrichment/references/prfaq-templates.md) |
+| ChatPRD Personas | Working Backwards, Five Whys, Pre-Mortem, Layman Clarity | [`chatprd-personas.md`](skills/_archived/spec-enrichment/references/chatprd-personas.md) (archived) |
+| PR/FAQ Templates | 4 spec templates (feature, infra, research, quick) | [`prfaq-templates.md`](skills/_archived/spec-enrichment/references/prfaq-templates.md) (archived) |
 | Cross-Surface References | Link formatting, surface-aware language, multimedia processing | [`cross-surface-references.md`](skills/clinearhub-workflow/references/cross-surface-references.md) |
 | Closure Protocol | Evidence requirements for issue closure | [`closure-protocol.md`](skills/issue-lifecycle/references/closure-protocol.md) |
 | Sentry Pipeline | Sentry↔GitHub↔Linear error pipeline | [`sentry-github-pipeline.md`](skills/incident-response/references/sentry-github-pipeline.md) |
 | PostHog Queries | HogQL patterns, funnel templates | [`posthog-queries.md`](skills/data-analytics/references/posthog-queries.md) |
 | Vercel Checks | Deploy verification patterns | [`vercel-checks.md`](skills/deployment-verification/references/vercel-checks.md) |
 | Railway Checks | Railway deployment verification | [`railway-checks.md`](skills/deployment-verification/references/railway-checks.md) |
-| Plan Format | Plan document template and conventions | [`plan-format.md`](skills/plan-persistence/references/plan-format.md) |
-| Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/plan-persistence/references/promotion-protocol.md) |
-| Multi-Surface Review | Cross-surface plan review chain (Cowork → Code → IDE) | [`multi-surface-review.md`](skills/plan-persistence/references/multi-surface-review.md) |
+| Plan Format | Plan document template and conventions | [`plan-format.md`](skills/_archived/plan-persistence/references/plan-format.md) (archived) |
+| Promotion Protocol | Plan promotion to Linear Documents | [`promotion-protocol.md`](skills/_archived/plan-persistence/references/promotion-protocol.md) (archived) |
+| Multi-Surface Review | Cross-surface plan review chain (Cowork → Code → IDE) | [`multi-surface-review.md`](skills/_archived/plan-persistence/references/multi-surface-review.md) (archived) |
 | Initiative Patterns | Initiative + Milestone management templates | [`initiative-patterns.md`](skills/roadmap-management/references/initiative-patterns.md) |
 | Operator Guide | Human operator playbook — session lifecycle, releases, onboarding | [`operator-guide.md`](skills/clinearhub-workflow/references/operator-guide.md) |
+| Manual Config | Linear UI settings not available via API (TI, triage rules, SLA) | [`linear-manual-config.md`](docs/linear-manual-config.md) |
 | Doppler Template | One-click secret provisioning (Tiers 1-5, 24 secrets) | [`doppler-template.yaml`](./doppler-template.yaml) |
 | Docs Sync Manifest | Source-target documentation sync | [`docs-sync.yml`](docs-sync.yml) |
 

@@ -172,6 +172,5 @@ This bridges the gap between GitHub merge and Linear issue quality. See `.github
 
 ## Cross-Skill References
 
-- **clinearhub-workflow** — Overall flow, where lifecycle fits (including Step 4.5 reconciliation)
-- **spec-enrichment** — How specs enter the lifecycle
-- **plan-persistence** — Plan lifecycle and session close protocol details
+- **clinearhub-workflow** — Overall 6-phase pipeline, where lifecycle fits (including Phase 5 reconciliation)
+- **_archived/spec-enrichment** — Historical: how specs entered the lifecycle (now handled by ChatPRD upstream)

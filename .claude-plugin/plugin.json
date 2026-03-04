@@ -1,7 +1,7 @@
 {
   "name": "clinearhub",
-  "version": "1.3.0",
-  "description": "Cowork-first PM methodology for Claudian. Spec-to-ship pipeline with plan persistence, roadmap management, and cross-surface sync — built for Linear + GitHub + PostHog + Sentry + Figma.",
+  "version": "2.1.0",
+  "description": "Cowork-first PM methodology for Claudian. Upstream spec creation (ChatPRD), GitHub Agentic Workflows for autonomous implementation, and post-merge reconciliation — built for Linear + GitHub + ChatPRD + PostHog + Sentry.",
   "author": {
     "name": "Cian O'Sullivan",
     "email": "cianos95@gmail.com"
