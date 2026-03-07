@@ -236,13 +236,42 @@ Use this structure for any competitor analysis or positioning work.
 
 Use `/crm-pipeline` for quick pipeline snapshots. Use `/stakeholder-update` for client-facing status. For internal pipeline review, use monday.com Sales Dashboard (native) or `board_insights` MCP tool for AI-generated analysis.
 
+## Website & Digital Delivery Process
+
+When a client engagement includes website modernisation or digital tool delivery, follow the design-workflow skill.
+
+### Client-Facing Description
+
+"We research your industry and competitors, prototype multiple design directions, and build a modern, mobile-first website on the same platform we use for all our clients. You'll see progress at every stage and can compare options before we finalise."
+
+### Delivery Steps
+
+1. **Research** — Firecrawl scrape client's existing site + 2-3 industry competitors. Extract brand, services, design patterns.
+2. **Design direction** — User provides Mobbin inspiration. Brand colors from client's existing site. Industry-appropriate aesthetic.
+3. **Prototype** — v0.dev for rapid variations (2-3 options). Share with client for preference.
+4. **Build** — Production code using design chain (4 stages). Section checkpoints with screenshots.
+5. **QA** — baseline-ui + accessibility + motion + metadata validation.
+6. **Deploy** — Vercel preview URL for client review. Max 2 revision rounds included in pricing.
+7. **Launch** — DNS cutover when approved. Handover documentation for "build with" phase.
+
+### Pricing Context
+
+| Service | Our Price | Market Average | Timeline |
+|---------|----------|----------------|----------|
+| Website modernisation | EUR 5K-10K | EUR 10K-20K | 2-3 weeks |
+| Client portal | EUR 20K-40K | EUR 40K-80K | 4-6 weeks |
+| Project/quote system | EUR 15K-30K | EUR 30K-60K | 4-8 weeks |
+
+See `design-workflow` skill for the full design chain and Mobbin/v0/Claude Preview workflow.
+
 ## Cross-Skill References
 
+- **design-workflow** — Design chain, Mobbin/v0/Preview workflow, client website delivery
 - **crm-management** — CRM operations, contact/lead/deal management, interaction logging
 - **clinear-context** — Workspace identity, team structure, consultancy positioning, content voice guidelines
 - **task-management** — Daily workflow patterns, standup format
 - **roadmap-management** — Initiative and milestone tracking for client projects
 - **data-analytics** — PostHog queries for usage metrics during QBRs
-- **content-marketing** — Case studies from successful client engagements
+- **content-marketing** — Case studies from successful client engagements, visual brand consistency
 - **competitive-intelligence** — Win/loss data feeds competitive analysis
 - **small-team-finance** — Quotes & Invoices board for client billing

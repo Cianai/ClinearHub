@@ -49,6 +49,9 @@ ClinearHub does **not** bundle its own MCP servers (`.mcp.json` is empty). All c
 | ChatPRD | CLI (`~/.mcp.json`) | Spec querying during Claude Code sessions |
 | Supabase | CLI (`~/.mcp.json`) / Plugin | Database, pgvector, edge functions (Code plugin + Cowork plugin) |
 | Slack | Settings > Connectors | Async client/team comms (DEFERRED — add when team grows or clients need it) |
+| Mobbin | User (manual) | Design inspiration library. User browses by industry, screenshots patterns. No MCP — user shares screenshots in conversation. See `design-workflow` skill. |
+| v0.dev | User (manual) | Rapid UI prototyping from text/image prompts. User generates 2-3 variations, shares with agent for comparison. No MCP — user operates directly. See `design-workflow` skill. |
+| Claude Preview | Code (MCP plugin) | Frontend verification: `preview_start`, `preview_screenshot`, `preview_click`, `preview_fill`. Agent uses for section checkpoints during builds. See `design-workflow` skill. |
 
 ## Surface B: Linear Agents & Integrations
 

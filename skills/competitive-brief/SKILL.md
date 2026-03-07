@@ -1,7 +1,7 @@
 ---
 name: competitive-brief
 description: |
-  Generate a competitive analysis snapshot for a product or market segment.
+  Generate a competitive analysis snapshot for a product or market segment. Use when researching competitors, preparing battlecards, analyzing market positioning, assessing competitive threats, comparing feature sets, reviewing win/loss patterns, or any question about how Claudian products compare to alternatives. Cross-references competitive-intelligence for ongoing tracking and business-development for sales positioning.
 ---
 
 # /competitive-brief

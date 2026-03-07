@@ -1,6 +1,7 @@
 ---
 name: launch-brief
-description: Generate a pre-launch checklist combining deploy readiness with go-to-market elements.
+description: |
+  Generate a pre-launch checklist combining deploy readiness with go-to-market elements. Use when preparing to launch a feature, product, or client website. Triggers for launch planning, release readiness, go-to-market preparation, launch sequence, rollback planning, feature release, product announcement, or any question about whether something is ready to ship. Extends the deployment-verification skill with GTM elements. Cross-references content-marketing for messaging and brand voice.
 ---
 
 # /launch-brief

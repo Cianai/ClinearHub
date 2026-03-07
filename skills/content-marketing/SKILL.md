@@ -197,8 +197,22 @@ Use this template for monthly content plans. Store as a Linear Document attached
 | PostHog | Enhanced | R | Content engagement metrics, funnel analysis |
 | Slack | Supplementary | W | Content distribution, team notifications (DEFERRED — add when team grows) |
 
+## Visual Brand Consistency
+
+When creating visual content (website pages, landing pages, social media graphics, case study pages), follow the design chain documented in the `design-workflow` skill.
+
+**Key rules:**
+- Every visual asset follows the brand voice guidelines for the target product (Cognito, Alteri, SoilWorx)
+- Use the 4-stage design chain: direction -> build -> QA -> polish
+- Run `/baseline-ui` and `/fixing-accessibility` on any web-based visual content
+- Client case studies and project showcases should use the client's brand colors alongside Cognito's
+- Construction/engineering industry content should use professional, solid aesthetics — no playful or startup-style design
+
+**Design skills available:** `frontend-design` (creative direction), `baseline-ui` (anti-slop), `fixing-accessibility`, `ui-ux-pro-max` (style/palette reference), impeccable commands (`/polish`, `/audit`, `/distill`).
+
 ## Cross-Skill References
 
+- **design-workflow** — Design chain, Mobbin/v0/Preview workflow for visual content production
 - **crm-management** — CRM segments feed campaign targeting, contact data for personalization
 - **business-development** — Case studies from successful client engagements, pipeline events trigger campaigns
 - **customer-ops** — Support patterns trigger re-engagement campaigns

@@ -1,6 +1,7 @@
 ---
 name: content-plan
-description: Generate a monthly content calendar sourced from the roadmap, research findings, and client conversations.
+description: |
+  Generate a monthly content calendar sourced from the roadmap, research findings, and client conversations. Use when planning content strategy, building editorial calendars, scheduling blog posts, planning LinkedIn content, preparing newsletter topics, coordinating content across products, or any question about what content to create next. Cross-references content-marketing for brand voice and humanizer for post-processing AI-generated drafts.
 ---
 
 # /content-plan

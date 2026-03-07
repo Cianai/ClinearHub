@@ -1,6 +1,7 @@
 ---
 name: client-review
-description: Generate a client health review for Cognito consultancy engagements.
+description: |
+  Generate a client health review for Cognito consultancy engagements. Use when assessing client relationship health, reviewing project status for a specific client, preparing quarterly business reviews, checking on client satisfaction, identifying at-risk engagements, or any question about how a Cognito client project is going. Pulls context from Linear projects, monday.com CRM, Granola meeting notes, and Google Calendar. Cross-references crm-management for contact data and customer-ops for support history.
 ---
 
 # /client-review

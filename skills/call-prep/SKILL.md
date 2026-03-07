@@ -1,7 +1,7 @@
 ---
 name: call-prep
 description: |
-  Generate a pre-meeting brief for a client call. Pulls context from Linear, monday.com, and Granola.
+  Generate a pre-meeting brief for a client call. Pulls context from Linear, monday.com, and Granola. Use when preparing for client meetings, stakeholder calls, sales calls, discovery calls, check-in calls, quarterly reviews, or any upcoming meeting that needs preparation. Generates agenda suggestions, talking points, open item summaries, and follow-up templates. Cross-references crm-management for contact data and client-review for health context.
 ---
 
 # /call-prep
