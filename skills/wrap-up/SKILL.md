@@ -51,6 +51,67 @@ at the end.
 
 ---
 
+## Phase 1.1: Plugin Release
+
+If files under `packages/clinear-plugin/` were modified during this session, the
+plugin needs a version bump and release so the next session picks up the latest
+skills.
+
+### 1.1a — Detect Plugin Changes
+
+1. Run `git diff --name-only <first-session-commit>..HEAD -- packages/clinear-plugin/`
+2. If no changes, skip this phase entirely
+
+### 1.1b — Version Bump
+
+3. Read current version from `packages/clinear-plugin/.claude-plugin/plugin.json`
+4. Bump the **patch** version (e.g. 2.6.0 → 2.6.1) unless the session added new
+   skills or breaking changes (then bump **minor**)
+5. Update `version` in `plugin.json`
+6. Update `version` and `plugins[0].version` in `marketplace.json`
+7. Re-run `packages/clinear-plugin/scripts/validate-plugin.sh` — must pass
+
+### 1.1c — Commit & Push
+
+8. Stage `packages/clinear-plugin/.claude-plugin/plugin.json` and `marketplace.json`
+9. Commit: `feat(plugin): ClinearHub vX.Y.Z — [brief summary]`
+10. Push to `origin/main`
+
+### 1.1d — Wait for Release Pipeline
+
+11. The push triggers the auto-release pipeline:
+    - `auto-release-plugin.yml` → validates + creates `vX.Y.Z` tag
+    - `release-plugin.yml` → builds zip + creates GitHub Release
+    - `publish-public.yml` → syncs to `Cianai/ClinearHub` + generates `marketplace.json`
+12. Wait for `auto-release-plugin.yml` to complete:
+    `gh run list --limit 1 --workflow auto-release-plugin.yml | grep completed`
+13. If the run fails, log the error and continue (don't block wrap-up)
+
+### 1.1e — Update Local Plugin
+
+14. Update the marketplace cache:
+    ```
+    claude plugin marketplace update clinearhub-marketplace
+    ```
+15. Update the installed plugin:
+    ```
+    claude plugin update clinearhub@clinearhub-marketplace
+    ```
+16. Present to user:
+    ```
+    Plugin updated: ClinearHub vX.Y.Z
+    → Restart Claude Code or run /reload-plugins to pick up the new version
+    ```
+
+### 1.1f — Final Report Addition
+
+17. Add to the Final Report under **Ship**:
+    ```
+    - Plugin: ClinearHub vX.Y.Z released → marketplace updated → local updated
+    ```
+
+---
+
 ## Phase 1.5: Plan Promotion
 
 If a plan was created or iterated during this session, promote it to Linear
@@ -377,6 +438,7 @@ Present a single consolidated report combining all phases:
 ### Ship
 - Commits: [count] ([commit SHAs])
 - PRs: [list with links]
+- Plugin: [ClinearHub vX.Y.Z released → marketplace updated → local updated] or "No plugin changes"
 - Typecheck: Pass ✅
 - Files created/modified: [count]
 
@@ -401,6 +463,7 @@ Present a single consolidated report combining all phases:
 
 ### Code Sessions (Claude Code / Cursor)
 - Full Phase 1 (commit, push, PR, typecheck)
+- Full Phase 1.1 (plugin release — if `packages/clinear-plugin/` changed)
 - Full Phase 1.5 (plan promotion to Linear)
 - Full Phase 2 (Linear normalization)
 - Full Phase 3 (memory)
@@ -410,6 +473,7 @@ Present a single consolidated report combining all phases:
 
 ### Cowork Sessions (Claude Desktop)
 - Skip Phase 1 (no filesystem access)
+- Skip Phase 1.1 (no filesystem access — plugin changes only happen in Code)
 - **Full Phase 1.5** (Plan Promotion — Cowork's primary persistence step)
 - Full Phase 2 (Linear normalization — primary focus)
 - Phase 3: memory updates via conversation summary only (no file writes)
@@ -419,6 +483,7 @@ Present a single consolidated report combining all phases:
 
 ### Context Budget Trigger (60%+)
 - Abbreviated Phase 1 (commit current work, no PR)
+- Phase 1.1: version bump + push only (skip waiting for pipeline, skip local update)
 - Phase 1.5: promote plan if exists (single `create_document` call)
 - Phase 2: status updates only (no detailed closing comments)
 - Phase 3: write critical memory only
