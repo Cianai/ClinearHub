@@ -1,0 +1,228 @@
+{
+  "name": "Construction Accelerator",
+  "version": "1.0.0",
+  "vertical": "construction",
+  "boards": [
+    {
+      "name": "Projects",
+      "kind": "private",
+      "columns": [
+        { "title": "Project Value", "type": "numbers" },
+        { "title": "Phase", "type": "status" },
+        { "title": "Contract Type", "type": "dropdown" },
+        { "title": "Client", "type": "text" },
+        { "title": "Client Contact", "type": "email" },
+        { "title": "Site Address", "type": "text" },
+        { "title": "Eircode", "type": "text" },
+        { "title": "Start Date", "type": "date" },
+        { "title": "Target Completion", "type": "date" },
+        { "title": "Project Manager", "type": "text" },
+        { "title": "Site Foreman", "type": "text" },
+        { "title": "Architect", "type": "text" },
+        { "title": "Engineer", "type": "text" },
+        { "title": "Planning Ref", "type": "text" },
+        { "title": "Retention %", "type": "numbers" },
+        { "title": "Variation Orders", "type": "numbers" },
+        { "title": "Notes", "type": "long_text" },
+        { "title": "Documents", "type": "link" }
+      ],
+      "groups": [
+        { "name": "Active Projects" },
+        { "name": "Tender Stage" },
+        { "name": "Pre-Construction" },
+        { "name": "On Hold" },
+        { "name": "Completed" },
+        { "name": "Defects Liability" }
+      ]
+    },
+    {
+      "name": "Site Diary",
+      "kind": "private",
+      "columns": [
+        { "title": "Date", "type": "date" },
+        { "title": "Weather", "type": "dropdown" },
+        { "title": "Temperature (C)", "type": "numbers" },
+        { "title": "Workforce Count", "type": "numbers" },
+        { "title": "Subcontractors On Site", "type": "text" },
+        { "title": "Work Completed", "type": "long_text" },
+        { "title": "Deliveries", "type": "long_text" },
+        { "title": "Visitors", "type": "text" },
+        { "title": "Delays / Disruptions", "type": "long_text" },
+        { "title": "Safety Incidents", "type": "status" },
+        { "title": "RFIs Raised", "type": "numbers" },
+        { "title": "Photos", "type": "link" },
+        { "title": "Recorded By", "type": "text" }
+      ],
+      "groups": [
+        { "name": "This Week" },
+        { "name": "Last Week" },
+        { "name": "Older" }
+      ]
+    },
+    {
+      "name": "Snagging & Issues",
+      "kind": "private",
+      "columns": [
+        { "title": "Severity", "type": "status" },
+        { "title": "Category", "type": "dropdown" },
+        { "title": "Location", "type": "text" },
+        { "title": "Floor / Level", "type": "text" },
+        { "title": "Responsible Subcontractor", "type": "text" },
+        { "title": "Date Raised", "type": "date" },
+        { "title": "Due Date", "type": "date" },
+        { "title": "Date Resolved", "type": "date" },
+        { "title": "Evidence Photos", "type": "link" },
+        { "title": "Resolution Photos", "type": "link" },
+        { "title": "Description", "type": "long_text" },
+        { "title": "Resolution Notes", "type": "long_text" },
+        { "title": "Raised By", "type": "text" },
+        { "title": "Cost Impact", "type": "numbers" }
+      ],
+      "groups": [
+        { "name": "Open" },
+        { "name": "In Progress" },
+        { "name": "Awaiting Inspection" },
+        { "name": "Resolved" },
+        { "name": "Closed" }
+      ]
+    },
+    {
+      "name": "Safety Observations",
+      "kind": "private",
+      "columns": [
+        { "title": "Observation Type", "type": "status" },
+        { "title": "Risk Level", "type": "status" },
+        { "title": "Category", "type": "dropdown" },
+        { "title": "Location", "type": "text" },
+        { "title": "Date Observed", "type": "date" },
+        { "title": "Reported By", "type": "text" },
+        { "title": "Description", "type": "long_text" },
+        { "title": "Corrective Action", "type": "long_text" },
+        { "title": "Action Assigned To", "type": "text" },
+        { "title": "Action Due Date", "type": "date" },
+        { "title": "Date Closed", "type": "date" },
+        { "title": "Evidence Photos", "type": "link" },
+        { "title": "RIDDOR Reportable", "type": "status" }
+      ],
+      "groups": [
+        { "name": "Open — Immediate Action" },
+        { "name": "Open — Monitoring" },
+        { "name": "Corrective Action Underway" },
+        { "name": "Closed" },
+        { "name": "Positive Observations" }
+      ]
+    },
+    {
+      "name": "Quotes & Tenders",
+      "kind": "private",
+      "columns": [
+        { "title": "Client", "type": "text" },
+        { "title": "Client Contact", "type": "email" },
+        { "title": "Tender Value", "type": "numbers" },
+        { "title": "Submission Deadline", "type": "date" },
+        { "title": "Date Submitted", "type": "date" },
+        { "title": "Tender Type", "type": "dropdown" },
+        { "title": "Status", "type": "status" },
+        { "title": "Estimator", "type": "text" },
+        { "title": "Scope of Works", "type": "long_text" },
+        { "title": "BOQ Link", "type": "link" },
+        { "title": "Drawings Link", "type": "link" },
+        { "title": "Margin %", "type": "numbers" },
+        { "title": "Prelims", "type": "numbers" },
+        { "title": "Result Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "In Preparation" },
+        { "name": "Submitted — Awaiting Decision" },
+        { "name": "Won" },
+        { "name": "Lost" },
+        { "name": "Withdrawn" }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Site Diary",
+      "to": "Projects",
+      "title": "Project"
+    },
+    {
+      "from": "Snagging & Issues",
+      "to": "Projects",
+      "title": "Project"
+    },
+    {
+      "from": "Safety Observations",
+      "to": "Projects",
+      "title": "Project"
+    },
+    {
+      "from": "Projects",
+      "to": "Site Diary",
+      "title": "Diary Entries"
+    },
+    {
+      "from": "Projects",
+      "to": "Snagging & Issues",
+      "title": "Snag List"
+    },
+    {
+      "from": "Projects",
+      "to": "Safety Observations",
+      "title": "Safety Log"
+    },
+    {
+      "from": "Projects",
+      "to": "Quotes & Tenders",
+      "title": "Original Tender"
+    },
+    {
+      "from": "Quotes & Tenders",
+      "to": "Projects",
+      "title": "Awarded Project"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "Construction Overview",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "NUMBER", "name": "Active Projects", "board": "Projects", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "BATTERY", "name": "Project Phase Progress", "board": "Projects", "status_column": "status" },
+        { "kind": "CHART", "name": "Projects by Phase", "board": "Projects", "graph_type": "pie", "x_column": "status", "y_column": "name" },
+        { "kind": "NUMBER", "name": "Open Snags", "board": "Snagging & Issues", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "BATTERY", "name": "Snagging Progress", "board": "Snagging & Issues", "status_column": "status" }
+      ]
+    },
+    {
+      "name": "Safety Dashboard",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "CHART", "name": "Observations by Risk Level", "board": "Safety Observations", "graph_type": "pie", "x_column": "status", "y_column": "name" },
+        { "kind": "NUMBER", "name": "Total Observations", "board": "Safety Observations", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "BATTERY", "name": "Resolution Status", "board": "Safety Observations", "status_column": "status" }
+      ]
+    }
+  ],
+  "manualSteps": [
+    "Set up automations: when Site Diary 'Safety Incidents' changes to 'Yes' -> create Safety Observation item",
+    "Set up automations: when Snagging 'Due Date' arrives -> notify Responsible Subcontractor",
+    "Set up automations: when Quotes & Tenders 'Status' changes to 'Won' -> create Projects item",
+    "Set up automations: when Safety Observations 'Risk Level' changes to 'Critical' -> notify Site Foreman immediately",
+    "Configure status labels: Projects Phase (Tender, Pre-Construction, Groundworks, Structural, Fit-Out, Commissioning, Handover, Defects)",
+    "Configure status labels: Snagging Severity (Critical, Major, Minor, Cosmetic)",
+    "Configure status labels: Safety Observation Type (Unsafe Act, Unsafe Condition, Near Miss, Positive Observation)",
+    "Configure status labels: Safety Risk Level (Critical, High, Medium, Low)",
+    "Configure dropdown values: Weather (Dry, Rain, Heavy Rain, Wind, Snow, Frost, Fog)",
+    "Configure dropdown values: Contract Type (Fixed Price, Cost Plus, Design & Build, JCT, RIAI, Public Works)",
+    "Configure dropdown values: Snagging Category (Structural, Mechanical, Electrical, Plumbing, Finishing, External, Fire Safety)",
+    "Configure dropdown values: Safety Category (Working at Height, Excavation, Electrical, Manual Handling, PPE, Housekeeping, Fire, Plant/Machinery)",
+    "Configure dropdown values: Tender Type (Open, Selective, Negotiated, Framework, Emergency)",
+    "Set up views: Projects Timeline view (Gantt by Start Date to Target Completion)",
+    "Set up views: Snagging Kanban view (by Severity status)",
+    "Set up views: Site Diary Calendar view (by Date)",
+    "Set up AI Blocks: auto-categorize Safety Observations from description text",
+    "Set up integrations: Google Drive (for photos and documents links)",
+    "Set up integrations: email notifications for tender deadlines (7 days, 1 day before)"
+  ]
+}

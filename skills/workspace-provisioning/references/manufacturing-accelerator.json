@@ -1,0 +1,243 @@
+{
+  "name": "Manufacturing Accelerator",
+  "version": "1.0.0",
+  "vertical": "manufacturing",
+  "boards": [
+    {
+      "name": "Production Planning",
+      "kind": "private",
+      "columns": [
+        { "title": "Product", "type": "text" },
+        { "title": "Batch/Lot Number", "type": "text" },
+        { "title": "Quantity Ordered", "type": "numbers" },
+        { "title": "Quantity Produced", "type": "numbers" },
+        { "title": "Production Line", "type": "dropdown" },
+        { "title": "Priority", "type": "status" },
+        { "title": "Status", "type": "status" },
+        { "title": "Start Date", "type": "date" },
+        { "title": "Target Completion", "type": "date" },
+        { "title": "Actual Completion", "type": "date" },
+        { "title": "Shift", "type": "dropdown" },
+        { "title": "Operator", "type": "text" },
+        { "title": "Downtime (hrs)", "type": "numbers" },
+        { "title": "Downtime Reason", "type": "dropdown" },
+        { "title": "Scrap / Waste Units", "type": "numbers" },
+        { "title": "Customer Order Ref", "type": "text" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Scheduled" },
+        { "name": "In Production" },
+        { "name": "Quality Hold" },
+        { "name": "Completed" },
+        { "name": "Canceled" }
+      ]
+    },
+    {
+      "name": "Quality Control",
+      "kind": "private",
+      "columns": [
+        { "title": "Batch/Lot Number", "type": "text" },
+        { "title": "Product", "type": "text" },
+        { "title": "Inspection Type", "type": "dropdown" },
+        { "title": "Inspector", "type": "text" },
+        { "title": "Inspection Date", "type": "date" },
+        { "title": "QC Result", "type": "status" },
+        { "title": "Defect Type", "type": "dropdown" },
+        { "title": "Defect Count", "type": "numbers" },
+        { "title": "Sample Size", "type": "numbers" },
+        { "title": "Accept / Reject", "type": "status" },
+        { "title": "Corrective Action", "type": "long_text" },
+        { "title": "Root Cause", "type": "dropdown" },
+        { "title": "CAPA Reference", "type": "text" },
+        { "title": "Evidence Photos", "type": "link" },
+        { "title": "Retest Date", "type": "date" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Pending Inspection" },
+        { "name": "In Progress" },
+        { "name": "Passed" },
+        { "name": "Failed — Corrective Action" },
+        { "name": "Failed — Scrapped" },
+        { "name": "Retest Required" }
+      ]
+    },
+    {
+      "name": "Inventory Management",
+      "kind": "private",
+      "columns": [
+        { "title": "SKU", "type": "text" },
+        { "title": "Description", "type": "text" },
+        { "title": "Category", "type": "dropdown" },
+        { "title": "Unit of Measure", "type": "dropdown" },
+        { "title": "Current Stock", "type": "numbers" },
+        { "title": "Reorder Point", "type": "numbers" },
+        { "title": "Reorder Quantity", "type": "numbers" },
+        { "title": "Unit Cost", "type": "numbers" },
+        { "title": "Total Value", "type": "numbers" },
+        { "title": "Location", "type": "text" },
+        { "title": "Last Stocktake", "type": "date" },
+        { "title": "Stock Status", "type": "status" },
+        { "title": "Lead Time (days)", "type": "numbers" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Raw Materials" },
+        { "name": "Work in Progress" },
+        { "name": "Finished Goods" },
+        { "name": "Consumables" },
+        { "name": "Below Reorder Point" }
+      ]
+    },
+    {
+      "name": "Supplier Management",
+      "kind": "private",
+      "columns": [
+        { "title": "Contact Name", "type": "text" },
+        { "title": "Email", "type": "email" },
+        { "title": "Phone", "type": "phone" },
+        { "title": "Website", "type": "link" },
+        { "title": "Products Supplied", "type": "text" },
+        { "title": "Supplier Rating", "type": "status" },
+        { "title": "Payment Terms", "type": "dropdown" },
+        { "title": "Lead Time (days)", "type": "numbers" },
+        { "title": "Last Order Date", "type": "date" },
+        { "title": "Annual Spend", "type": "numbers" },
+        { "title": "Certifications", "type": "tags" },
+        { "title": "Country", "type": "text" },
+        { "title": "Contract Expiry", "type": "date" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Approved Suppliers" },
+        { "name": "Under Evaluation" },
+        { "name": "Preferred Suppliers" },
+        { "name": "On Watch" },
+        { "name": "Deactivated" }
+      ]
+    },
+    {
+      "name": "Dispatch & Delivery",
+      "kind": "private",
+      "columns": [
+        { "title": "Customer", "type": "text" },
+        { "title": "Order Reference", "type": "text" },
+        { "title": "Product", "type": "text" },
+        { "title": "Quantity", "type": "numbers" },
+        { "title": "Dispatch Date", "type": "date" },
+        { "title": "Delivery Date", "type": "date" },
+        { "title": "Carrier", "type": "dropdown" },
+        { "title": "Tracking Number", "type": "text" },
+        { "title": "Delivery Status", "type": "status" },
+        { "title": "Delivery Address", "type": "long_text" },
+        { "title": "Pallet Count", "type": "numbers" },
+        { "title": "Weight (kg)", "type": "numbers" },
+        { "title": "POD Link", "type": "link" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Awaiting Dispatch" },
+        { "name": "In Transit" },
+        { "name": "Delivered" },
+        { "name": "Returned" },
+        { "name": "On Hold" }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Quality Control",
+      "to": "Production Planning",
+      "title": "Production Batch"
+    },
+    {
+      "from": "Production Planning",
+      "to": "Quality Control",
+      "title": "QC Inspections"
+    },
+    {
+      "from": "Production Planning",
+      "to": "Inventory Management",
+      "title": "Materials Used"
+    },
+    {
+      "from": "Inventory Management",
+      "to": "Supplier Management",
+      "title": "Preferred Supplier"
+    },
+    {
+      "from": "Dispatch & Delivery",
+      "to": "Production Planning",
+      "title": "Production Order"
+    },
+    {
+      "from": "Production Planning",
+      "to": "Dispatch & Delivery",
+      "title": "Shipments"
+    },
+    {
+      "from": "Supplier Management",
+      "to": "Inventory Management",
+      "title": "Items Supplied"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "Production Overview",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "BATTERY", "name": "Production Status", "board": "Production Planning", "status_column": "status" },
+        { "kind": "NUMBER", "name": "Active Orders", "board": "Production Planning", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "CHART", "name": "Orders by Priority", "board": "Production Planning", "graph_type": "pie", "x_column": "status", "y_column": "name" }
+      ]
+    },
+    {
+      "name": "Quality Dashboard",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "CHART", "name": "QC Pass/Fail Rate", "board": "Quality Control", "graph_type": "pie", "x_column": "status", "y_column": "name" },
+        { "kind": "BATTERY", "name": "QC Progress", "board": "Quality Control", "status_column": "status" },
+        { "kind": "NUMBER", "name": "Open Inspections", "board": "Quality Control", "settings_type": "counter", "counter_type": "sum" }
+      ]
+    },
+    {
+      "name": "Inventory Dashboard",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "NUMBER", "name": "Total SKUs", "board": "Inventory Management", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "BATTERY", "name": "Stock Levels", "board": "Inventory Management", "status_column": "status" }
+      ]
+    }
+  ],
+  "manualSteps": [
+    "Set up automations: when Inventory 'Current Stock' drops below 'Reorder Point' -> move to 'Below Reorder Point' group + notify procurement",
+    "Set up automations: when Production 'Status' changes to 'Completed' -> create Quality Control inspection item",
+    "Set up automations: when Quality Control 'Accept / Reject' changes to 'Reject' -> update Production 'Status' to 'Quality Hold'",
+    "Set up automations: when Supplier 'Contract Expiry' is 30 days away -> notify procurement to review",
+    "Set up automations: when Dispatch 'Delivery Status' changes to 'Delivered' -> update Production 'Status' to 'Completed'",
+    "Configure status labels: Production Priority (Urgent, High, Standard, Low)",
+    "Configure status labels: Production Status (Scheduled, In Production, Quality Hold, Completed, Canceled)",
+    "Configure status labels: QC Result (Pass, Conditional Pass, Fail, Pending)",
+    "Configure status labels: Accept / Reject (Accept, Reject, Conditional Accept)",
+    "Configure status labels: Supplier Rating (Excellent, Good, Satisfactory, Poor, Critical)",
+    "Configure status labels: Stock Status (In Stock, Low Stock, Out of Stock, Discontinued)",
+    "Configure status labels: Delivery Status (Awaiting Dispatch, Picked, Dispatched, In Transit, Delivered, Returned)",
+    "Configure dropdown values: Production Line (Line 1, Line 2, Line 3 — adapt to client facility)",
+    "Configure dropdown values: Shift (Day, Evening, Night, Weekend)",
+    "Configure dropdown values: Downtime Reason (Mechanical Failure, Material Shortage, Changeover, Maintenance, Staff Shortage, Other)",
+    "Configure dropdown values: Inspection Type (Incoming, In-Process, Final, Audit, Customer Complaint)",
+    "Configure dropdown values: Defect Type (Dimensional, Visual, Functional, Packaging, Labeling, Contamination)",
+    "Configure dropdown values: Root Cause (Material, Machine, Method, Manpower, Measurement, Environment)",
+    "Configure dropdown values: Category (Raw Materials, Components, Packaging, Chemicals, Spare Parts)",
+    "Configure dropdown values: Unit of Measure (kg, litres, units, metres, pallets, boxes)",
+    "Configure dropdown values: Payment Terms (Net 30, Net 60, Net 90, COD, Prepaid)",
+    "Configure dropdown values: Carrier (adapt to client's logistics providers)",
+    "Set up views: Production Planning Timeline (Gantt by Start Date to Target Completion)",
+    "Set up views: Inventory Kanban (by Stock Status)",
+    "Set up views: Dispatch Calendar (by Dispatch Date)",
+    "Set up AI Blocks: auto-calculate Scrap Rate from Scrap Units / Quantity Produced",
+    "Set up AI Blocks: auto-flag suppliers with rating below 'Satisfactory' and expiring contracts",
+    "Set up integrations: barcode/QR scanning for inventory stocktake (mobile monday.com app)"
+  ]
+}

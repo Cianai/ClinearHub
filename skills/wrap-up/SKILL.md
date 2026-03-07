@@ -252,6 +252,22 @@ Before writing:
 3. If MEMORY.md is near limit, move detailed content to topic files
 4. Update `> Last updated:` date in MEMORY.md
 
+### Stale Content Audit
+
+After writing new memories, audit for contradictions and outdated content:
+
+1. **MEMORY.md**: Scan for statements that contradict session findings. Common pattern:
+   a previous session recorded "X fails" or "X not supported" — this session proved
+   otherwise. Fix all contradictions in-place.
+2. **CLAUDE.md** (repo root): Check for stale version numbers, outdated app/package lists,
+   missing new apps or packages, and skill counts that no longer match the plugin.
+   Only fix clear factual staleness — do not rewrite style or structure.
+3. **Topic files**: If a topic file contains information superseded by this session's
+   findings, update or remove the outdated sections.
+
+**Rule:** Every fact in memory files must reflect the latest validated state. A memory
+that says "dashboard creation fails" when it now works is worse than no memory at all.
+
 Auto-apply all memory updates. Present what was saved in the final report.
 
 ---

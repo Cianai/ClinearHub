@@ -12,7 +12,7 @@
       "name": "clinearhub",
       "source": "./",
       "description": "Cowork-first PM methodology for Claudian. Upstream spec creation (ChatPRD), GitHub Agentic Workflows for autonomous implementation, post-merge reconciliation, business development, competitive intelligence, content marketing, design workflow, and small-team finance \u2014 built for Linear + GitHub + monday.com (CRM + Service + Campaigns) + Notion + ChatPRD + PostHog + Sentry + Stripe + Clay + Excalidraw.",
-      "version": "2.7.0",
+      "version": "2.8.0",
       "author": {
         "name": "Cian O'Sullivan",
         "url": "https://github.com/Cianai"
@@ -31,6 +31,7 @@
       "skills": [
         "./skills/business-development",
         "./skills/call-prep",
+        "./skills/client-onboarding",
         "./skills/client-review",
         "./skills/clinear-context",
         "./skills/clinearhub-workflow",
@@ -54,9 +55,10 @@
         "./skills/roadmap-management",
         "./skills/small-team-finance",
         "./skills/task-management",
+        "./skills/workspace-provisioning",
         "./skills/wrap-up"
       ]
     }
   ],
-  "version": "2.7.0"
+  "version": "2.8.0"
 }

@@ -1,0 +1,149 @@
+{
+  "name": "Professional Services Accelerator",
+  "version": "1.0.0",
+  "vertical": "professional-services",
+  "boards": [
+    {
+      "name": "Client Projects",
+      "kind": "private",
+      "columns": [
+        { "title": "Client", "type": "text" },
+        { "title": "Client Contact", "type": "email" },
+        { "title": "Project Type", "type": "dropdown" },
+        { "title": "Status", "type": "status" },
+        { "title": "Priority", "type": "status" },
+        { "title": "Project Lead", "type": "text" },
+        { "title": "Team Members", "type": "text" },
+        { "title": "Start Date", "type": "date" },
+        { "title": "Target Completion", "type": "date" },
+        { "title": "Contract Value", "type": "numbers" },
+        { "title": "Invoiced to Date", "type": "numbers" },
+        { "title": "Budget Remaining", "type": "numbers" },
+        { "title": "Billing Type", "type": "dropdown" },
+        { "title": "SOW Link", "type": "link" },
+        { "title": "Risk Level", "type": "status" },
+        { "title": "Next Milestone", "type": "text" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Active" },
+        { "name": "Onboarding" },
+        { "name": "On Hold" },
+        { "name": "Closing Out" },
+        { "name": "Completed" },
+        { "name": "Archived" }
+      ]
+    },
+    {
+      "name": "Time & Resource Tracking",
+      "kind": "private",
+      "columns": [
+        { "title": "Team Member", "type": "text" },
+        { "title": "Date", "type": "date" },
+        { "title": "Hours Worked", "type": "numbers" },
+        { "title": "Billable Hours", "type": "numbers" },
+        { "title": "Non-Billable Hours", "type": "numbers" },
+        { "title": "Hourly Rate", "type": "numbers" },
+        { "title": "Billable Amount", "type": "numbers" },
+        { "title": "Task Category", "type": "dropdown" },
+        { "title": "Description", "type": "long_text" },
+        { "title": "Status", "type": "status" },
+        { "title": "Approved By", "type": "text" },
+        { "title": "Approval Date", "type": "date" },
+        { "title": "Invoice Reference", "type": "text" }
+      ],
+      "groups": [
+        { "name": "This Week" },
+        { "name": "Pending Approval" },
+        { "name": "Approved" },
+        { "name": "Invoiced" }
+      ]
+    },
+    {
+      "name": "Deliverables",
+      "kind": "private",
+      "columns": [
+        { "title": "Deliverable Type", "type": "dropdown" },
+        { "title": "Status", "type": "status" },
+        { "title": "Owner", "type": "text" },
+        { "title": "Due Date", "type": "date" },
+        { "title": "Date Submitted", "type": "date" },
+        { "title": "Client Approved", "type": "status" },
+        { "title": "Approval Date", "type": "date" },
+        { "title": "Version", "type": "numbers" },
+        { "title": "Document Link", "type": "link" },
+        { "title": "Review Notes", "type": "long_text" },
+        { "title": "Revision Requested", "type": "status" },
+        { "title": "Dependencies", "type": "text" },
+        { "title": "Notes", "type": "long_text" }
+      ],
+      "groups": [
+        { "name": "Not Started" },
+        { "name": "In Progress" },
+        { "name": "Internal Review" },
+        { "name": "Submitted to Client" },
+        { "name": "Revision Required" },
+        { "name": "Approved" }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Time & Resource Tracking",
+      "to": "Client Projects",
+      "title": "Project"
+    },
+    {
+      "from": "Deliverables",
+      "to": "Client Projects",
+      "title": "Project"
+    },
+    {
+      "from": "Client Projects",
+      "to": "Time & Resource Tracking",
+      "title": "Time Entries"
+    },
+    {
+      "from": "Client Projects",
+      "to": "Deliverables",
+      "title": "Deliverables"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "Project Portfolio",
+      "kind": "PRIVATE",
+      "widgets": [
+        { "kind": "BATTERY", "name": "Project Status", "board": "Client Projects", "status_column": "status" },
+        { "kind": "NUMBER", "name": "Active Projects", "board": "Client Projects", "settings_type": "counter", "counter_type": "sum" },
+        { "kind": "CHART", "name": "Projects by Phase", "board": "Client Projects", "graph_type": "pie", "x_column": "status", "y_column": "name" },
+        { "kind": "BATTERY", "name": "Deliverable Progress", "board": "Deliverables", "status_column": "status" }
+      ]
+    }
+  ],
+  "manualSteps": [
+    "Set up automations: when Deliverables 'Due Date' is 3 days away and Status is not 'Submitted to Client' -> notify Owner",
+    "Set up automations: when Time & Resource Tracking 'Status' changes to 'Approved' -> calculate Billable Amount (Hours x Rate)",
+    "Set up automations: when Client Projects 'Budget Remaining' drops below 10% of Contract Value -> change Risk Level to 'High'",
+    "Set up automations: when Deliverables 'Client Approved' changes to 'Approved' -> update Deliverables Status to 'Approved'",
+    "Set up automations: weekly summary email to Project Lead with hours logged, deliverables due, budget status",
+    "Configure status labels: Project Status (Onboarding, Active, On Hold, Closing Out, Completed)",
+    "Configure status labels: Project Priority (Critical, High, Medium, Low)",
+    "Configure status labels: Risk Level (Low, Medium, High, Critical)",
+    "Configure status labels: Time Entry Status (Draft, Submitted, Approved, Invoiced)",
+    "Configure status labels: Deliverable Status (Not Started, In Progress, Internal Review, Submitted, Revision Required, Approved)",
+    "Configure status labels: Client Approved (Pending, Approved, Rejected)",
+    "Configure status labels: Revision Requested (None, Minor, Major)",
+    "Configure dropdown values: Project Type (Strategy, Implementation, Advisory, Audit, Training, Retainer)",
+    "Configure dropdown values: Billing Type (Fixed Fee, Time & Materials, Retainer, Milestone-Based, Blended)",
+    "Configure dropdown values: Task Category (Strategy, Analysis, Development, Documentation, Meetings, Admin, Travel)",
+    "Configure dropdown values: Deliverable Type (Report, Presentation, Workshop, Assessment, Roadmap, Implementation Plan, Training Materials, Audit Report)",
+    "Set up views: Client Projects Timeline (Gantt by Start Date to Target Completion)",
+    "Set up views: Deliverables Kanban (by Status)",
+    "Set up views: Time Tracking Calendar (by Date, filtered by team member)",
+    "Set up AI Blocks: auto-calculate utilization rate (Billable Hours / Total Hours)",
+    "Set up AI Blocks: auto-flag projects approaching budget ceiling",
+    "Set up integrations: Google Calendar (sync meetings as non-billable time entries)",
+    "Set up integrations: Google Drive (deliverable document storage and versioning)"
+  ]
+}
