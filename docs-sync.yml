@@ -44,3 +44,13 @@ mappings:
     target: "GitHub Public Repo (Cianai/ClinearHub) > README.md"
     section: "Full README"
     last_synced: null
+
+  - source: skills/notion-hub/references/database-schema.md
+    target: "Notion Workspace > Database Properties (manual verify)"
+    section: "Database Schema"
+    last_synced: null
+
+  - source: skills/crm-management/references/crm-protocol.md
+    target: "Notion Workspace > CRM Guide page"
+    section: "CRM Protocol"
+    last_synced: null

@@ -122,6 +122,26 @@ curl -X POST https://heesyjucnsatjjolyztt.supabase.co/functions/v1/ingest-paper 
 
 Note: Embeddings are now generated automatically by the Edge Function (Google gemini-embedding-001, 768 dims, free tier). No separate embedding step needed.
 
+### Phase 4.5: Sync to Notion Research Hub
+
+After Supabase ingestion, mirror papers and findings to Notion for human browsing. This step is **optional** — it degrades gracefully if Notion is unavailable.
+
+For each paper ingested in Phase 4:
+
+1. **Dedup check**: `notion-search` for the paper's Supabase ID in the Research Papers DB
+2. **If found**: `notion-update-page` — update Stage, Relevance Score, and Last Synced
+3. **If not found**: `notion-create-pages` in Research Papers DB:
+   - Properties: Title, Authors, DOI, arXiv ID, Stage, Relevance Score, Source API, Topics (multi_select), Supabase ID, Publication Date, Last Synced
+   - Page body: Abstract + Relevance Rationale as formatted blocks
+4. For each finding on the paper:
+   - `notion-search` for finding's Supabase ID in Research Findings DB
+   - Create or update with: Summary, Finding Type, Evidence Strength, Key Claims, Framework Connections, Scenario Categories
+   - Set Paper relation to the parent paper's Notion page
+
+**Graceful degradation**: If `notion-search` or `notion-create-pages` fails, log "Notion sync skipped — data persisted to Supabase only" and continue to Phase 5.
+
+**Property mapping reference**: See `notion-hub/references/database-schema.md` for full Supabase → Notion column mapping.
+
 ### Phase 5: Log Research Session
 
 **Always** record the search in `research_sessions` — even for zero-result searches (negative evidence is still evidence):
@@ -177,6 +197,7 @@ What is ABSENT from the literature:
 - Papers found: X | Ingested: Y | Duplicates: Z
 - Conflicts detected: N | Gaps identified: M
 - Session logged to Supabase
+- Notion sync: X papers, Y findings synced (or "skipped — connector unavailable")
 ```
 
 ### Phase 7: Suggest Follow-ups

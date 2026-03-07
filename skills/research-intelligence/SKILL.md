@@ -7,7 +7,7 @@ description: |
   paper ingestion, research database, Supabase research tables, vector search,
   embeddings, or any question about how research data flows through the system.
   Also triggers for questions about Semantic Scholar, arXiv, OpenAlex, HuggingFace
-  papers, Zotero integration, or Obsidian research vault.
+  papers, Zotero integration, Notion research hub, or Obsidian research vault (deprecated).
 ---
 
 # Research Intelligence
@@ -32,8 +32,9 @@ daily-paper-digest.md (GAW)            Claude Code sessions
            │           │          │
      ┌─────┘     ┌─────┘    ┌────┘
      ▼           ▼          ▼
-  Alteri App   Obsidian   OpenNotebook
-  RAG inject   vault sync  weekly digest
+  Alteri App   Notion      OpenNotebook
+  RAG inject   Research     weekly digest
+               Hub (MCP)
 ```
 
 ## Research Database (Supabase)
@@ -104,7 +105,8 @@ Uses vector similarity search (gemini-embedding-001, 768 dims) with keyword fall
 | Cowork | `/research` + OAuth connectors | Ad-hoc literature search |
 | Claude Code | Perplexity, Zotero, OpenNotebook MCPs | Deep exploration |
 | Positron | R + `httr2` → Supabase REST | Statistical analysis |
-| Obsidian | Vault at `01-Projects/Claudian/Alteri/Research/` | Knowledge graph |
+| Notion | Research Papers + Findings DBs via MCP | Browsable research hub |
+| Obsidian | Vault at `01-Projects/Claudian/Alteri/Research/` (deprecated) | Legacy knowledge graph |
 
 ## Research Labels
 
@@ -114,5 +116,22 @@ Uses vector similarity search (gemini-embedding-001, 768 dims) with keyword fall
 | `research:literature-mapped` | Papers identified, findings extracted |
 | `research:methodology-validated` | Research supports the approach |
 | `research:expert-reviewed` | Human researcher has validated |
+
+## Notion Research Hub (Phase 4.5)
+
+After Supabase ingestion (Phase 4 of `/research`), sync papers and findings to Notion:
+
+1. For each ingested paper:
+   a. `notion-search` for existing page by Supabase ID
+   b. If found → `notion-update-page` with updated properties (stage, relevance_score)
+   c. If not found → `notion-create-pages` in Research Papers DB with full metadata + abstract as page body
+2. For each finding:
+   a. `notion-search` for existing page by Supabase ID
+   b. Create or update in Research Findings DB with relation to parent paper
+3. Log sync summary: "Synced N papers and M findings to Notion Research Hub"
+
+If Notion connector unavailable: skip silently, log "Notion unavailable — research data persisted to Supabase only."
+
+> See [notion-hub](../notion-hub/SKILL.md) for database schema and MCP tool reference.
 
 See also: `research-ideation` skill for hypothesis generation from literature gaps.

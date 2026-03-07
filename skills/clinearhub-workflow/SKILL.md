@@ -73,6 +73,21 @@ Human reviews TI results in Cowork, then confirms or corrects using **triage tem
 
 **Quick Capture** template: for rapid issue creation from Linear iOS app (typing/voice dictation). Sets `spec:draft` + `source:direct`, Status: Triage. Intended for later enrichment by @chatprd agent or Cowork triage.
 
+**Auto: Spike** template: for autonomous investigation of research or technical spikes. Sets `type:spike`, `exec:quick`, `auto:investigate`, `ctx:autonomous`, `spec:ready`, Status: Todo, Priority: Low, Est: 1. Triage rule #3 auto-adds `auto:investigate` + `ctx:autonomous` when spikes reach Todo.
+
+#### Plan Mode Guidance
+
+Claude Code's interactive plan mode creates persistent plan files at `~/.claude/plans/<name>.md`. Use this decision table to choose the right planning surface:
+
+| Scenario | Surface | Why |
+|----------|---------|-----|
+| Multi-step implementation with code changes | Claude Code plan mode | Creates durable file, supports annotation, promotes to Linear via wrap-up |
+| Spec enrichment, roadmap discussion, stakeholder review | Cowork (conversational) | Interactive back-and-forth, MCP access for Linear reads |
+| Quick fix, single-file change, obvious scope | No plan needed | Commit message suffices |
+| Cross-session work requiring persistence | Either → promote to Linear Document | `plan-persistence` skill handles promotion from both surfaces |
+
+Plan mode files are consumed by the wrap-up skill (Phase 1.5) for automatic promotion to Linear Documents. See [plan-persistence](../plan-persistence/SKILL.md) for the full lifecycle.
+
 **Context sources:**
 - From project (via "Create task with context"): project instructions + static reference docs
 - From MCP connectors (live data): Linear, GitHub, Sentry, PostHog
@@ -130,6 +145,24 @@ Human returns when notified (Phase 8 comment = "all sub-issues complete"):
 - `/stakeholder-update` for status communication
 - `/analyze` for PostHog data on feature adoption
 - Plan next cycle
+
+After generating the stakeholder update, write to the Notion Stakeholder Dashboard DB via MCP with the appropriate audience property:
+
+```
+notion-create-pages(
+  database: "Stakeholder Dashboard",
+  properties: {
+    Period: "<cycle or week label>",
+    Type: "stakeholder-update",
+    Audience: "<leadership | team | engineering>",
+    "Linear Cycle": "<current cycle ID>",
+    "Metrics Snapshot": "<key metrics summary>"
+  },
+  content: "<full stakeholder update markdown>"
+)
+```
+
+If the Notion MCP server is unavailable, skip silently — the update is still delivered in-session.
 
 ## Agent Pipeline
 
@@ -230,3 +263,4 @@ Every file reference in Linear issues, comments, and session output must be a cl
 - **task-management** — Governs standups, daily workflow
 - **_archived/spec-enrichment** — Historical: PR/FAQ templates, ChatPRD personas (now handled by ChatPRD directly)
 - **plan-persistence** — Plan lifecycle management, Linear Document promotion, session start context recovery
+- **notion-hub** — Notion MCP integration, Stakeholder Dashboard DB schema

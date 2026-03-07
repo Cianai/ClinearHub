@@ -52,7 +52,8 @@ Rules: Apply only to Todo, In Progress, In Review. Remove on Done/Canceled.
 
 | Label | Action | Description |
 |-------|--------|-------------|
-| `auto:implement` | Triggers Codex dispatch via Linear triage rule | Trigger auto-implementation via Codex triage rule |
+| `auto:implement` | Triggers code implementation via gh-aw / Copilot | Trigger auto-implementation via gh-aw implement-issue workflow |
+| `auto:investigate` | Triggers spike investigation via gh-aw | Trigger autonomous spike investigation via gh-aw investigate-spike workflow |
 
 ## Research Readiness Labels (Group: Research — Single Select, ALT Primarily)
 

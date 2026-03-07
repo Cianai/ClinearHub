@@ -115,8 +115,29 @@ For each issue reviewed:
 3. Wait for CIA-YYY before dispatching
 ```
 
+## Notion Stakeholder Dashboard
+
+After generating the weekly brief, write to the Notion Stakeholder Dashboard DB via MCP:
+
+```
+notion-create-pages(
+  database: "Stakeholder Dashboard",
+  properties: {
+    Period: "<cycle or week label>",
+    Type: "weekly-brief",
+    Audience: "team",
+    "Linear Cycle": "<current cycle ID>",
+    "Metrics Snapshot": "<WIP count, cycle %, deploy count>"
+  },
+  content: "<full weekly brief markdown>"
+)
+```
+
+If the Notion MCP server is unavailable, skip silently — the weekly brief is still delivered in-session.
+
 ## Cross-Skill References
 
 - **clinearhub-workflow** — Label system, triage protocol, WIP limits
 - **issue-lifecycle** — Status transitions, closure protocol, ctx:* labels
 - **incident-response** — Error issues that may appear in standups
+- **notion-hub** — Notion MCP integration, Stakeholder Dashboard DB schema

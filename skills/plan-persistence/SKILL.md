@@ -45,7 +45,7 @@ The plan appears in the issue's Resources section in Linear UI. Then backlink vi
 ```
 create_comment(
   issueId: "<issue_id>",
-  body: "Plan promoted: [Plan: <ISSUE-ID> — <summary>](<document_url>)\nReview & annotate: <plan-review-app-url>/plan/<doc-id>"
+  body: "Plan promoted: [Plan: <ISSUE-ID> — <summary>](<document_url>)\nReview & annotate: https://plan-review-cianai.vercel.app/plan/<doc-id>"
 )
 ```
 
@@ -145,7 +145,7 @@ Plan `[ ]` / `[x]` checkboxes map bidirectionally with issue ACs:
 | Platform | Plan Source | Promotion | Visual Review |
 |----------|------------|-----------|---------------|
 | **Cowork** | Conversation context | `create_document` via Linear MCP | Plan Review App URL |
-| **Code** | `~/.claude/plans/` file | Read file → `create_document` | Plan Review App URL |
+| **Code** | `~/.claude/plans/<name>.md` (plan mode) or inline | Read file → `create_document` | Plan Review App URL |
 | **Code + Plannotator** | Plannotator annotation UI | Phase 1.5 reads annotated plan → `create_document` | Plannotator local UI |
 | **Stakeholders** | N/A (consumers only) | N/A | Plan Review App or Plannotator share URL |
 
@@ -155,7 +155,7 @@ Both Cowork and Code use the same Linear MCP tools. Tool names have different pr
 
 The hosted plan annotation UI at `apps/plan-review/` provides visual plan review from any browser:
 
-- **URL**: `<plan-review-url>/plan/<document-id>`
+- **URL**: `https://plan-review-cianai.vercel.app/plan/<document-id>`
 - **Read**: Renders Linear Document markdown with section headings
 - **Annotate**: Per-section comments written back as Linear comments
 - **Access**: No auth required (document IDs are UUIDs)
@@ -206,6 +206,7 @@ For each issue in scope:
 3. `list_documents(query: "Plan: <ISSUE-ID>", limit: 5)` — plans (read the most recent)
 4. `get_attachment(issueId)` — human-added resources
 5. `get_issue(parentId, includeRelations: true)` — parent + sibling status (if child issue)
+6. Read `carry-forward.md` from the project's auto-memory directory — include Active items in Known State
 
 ### Output: Known State
 
@@ -265,3 +266,4 @@ For each issue in scope:
 - **clinearhub-workflow** — 6-step pipeline, where plan persistence fits
 - **issue-lifecycle** — Status transitions, closure protocol
 - **wrap-up** — Phase 1.5 (Plan Promotion) auto-promotes at session end
+- **notion-hub** — Phase 1.5d: Notion mirror of promoted plans to Specs & Plans DB

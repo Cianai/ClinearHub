@@ -215,8 +215,29 @@ PostHog uses **Bayesian statistics** for A/B test analysis:
 | Sequential testing | Built-in — safe to check results early |
 | Confidence intervals | Credible intervals (Bayesian) |
 
+## Notion Stakeholder Dashboard
+
+Analytics snapshots can be persisted to the Notion Stakeholder Dashboard DB via MCP for historical record:
+
+```
+notion-create-pages(
+  database: "Stakeholder Dashboard",
+  properties: {
+    Period: "<week or cycle label>",
+    Type: "analytics-snapshot",
+    Audience: "team",
+    "Linear Cycle": "<current cycle ID>",
+    "Metrics Snapshot": "<DAU/WAU, funnel conversion %, P95 latency, error rate>"
+  },
+  content: "<analytics report markdown with key metrics and trends>"
+)
+```
+
+If the Notion MCP server is unavailable, skip silently — analytics output is still delivered in-session.
+
 ## Cross-Skill References
 
 - **clinearhub-workflow** — Step 5 (human review) uses analytics data for verification
 - **deployment-verification** — Post-deploy funnel checks use PostHog
 - **incident-response** — PostHog provides user impact assessment for errors
+- **notion-hub** — Notion MCP integration, Stakeholder Dashboard DB schema

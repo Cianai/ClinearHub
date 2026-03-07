@@ -26,7 +26,7 @@ Human touches Phase 1 (write spec) and Phase 6 (review outcomes). Everything els
 | CI/CD | GitHub Actions | OAuth Connector |
 | Deployment | Vercel + Railway | Desktop Connector / CLI |
 | Design | Figma + Magic Patterns | OAuth Connector |
-| CRM | Linear Customer Requests + Notion | OAuth Connector |
+| CRM | Notion CRM databases + Linear Customer Requests | OAuth Connector (Notion Business) |
 | Email | Gmail | OAuth Connector |
 | Calendar | Google Calendar | OAuth Connector |
 | Meetings | Granola | Desktop Connector |
@@ -56,6 +56,8 @@ Agents handle the spec-to-ship loop autonomously:
 | `deployment-verification` | Vercel + Railway deploy checks, Supabase env sync, zero-touch loop |
 | `data-analytics` | PostHog analytics, monitoring, data warehouse, notebooks |
 | `roadmap-management` | Strategic roadmap via Linear Initiatives + Milestones, Now/Next/Later |
+| `notion-hub` | Notion workspace integration, 6-database architecture, MCP tool patterns, sync |
+| `crm-management` | CRM operations using Notion Contacts + Interactions databases |
 | `research-intelligence` | Research data pipeline, paper ingestion, RAG, Supabase pgvector |
 
 ### Archived Skills (2) — in `skills/_archived/`, kept for reference
@@ -83,6 +85,10 @@ Agents handle the spec-to-ship loop autonomously:
 | `roadmap-update` | View, update, and manage strategic roadmap via Initiatives and Milestones |
 | `sync-status` | Mechanical cross-surface status sync to Linear + GitHub |
 | `research` | Ad-hoc literature search, scoring, Supabase ingestion, Linear issue creation |
+| `crm-log` | Log CRM interaction to Notion CRM Interactions DB |
+| `crm-lookup` | Search CRM contacts and interaction history in Notion |
+| `crm-report` | Generate CRM summary for stakeholder updates |
+| `sync-notion` | Full sync: Supabase research → Notion, report sync status |
 
 ### Query Skills (2) — auto-invocable by model
 
@@ -148,7 +154,7 @@ CI will build the zip, generate release notes from commits, and publish the rele
 
 All connectors should be configured globally — do **not** bundle them in the plugin `.mcp.json` to avoid duplicate tool registrations. See [Known Issues](#known-issues--caveats) for details.
 
-OAuth Connectors (global): Linear, GitHub, Notion, Figma, Sentry, Google Calendar, Gmail
+OAuth Connectors (global): Linear, GitHub, Notion (Business plan), Figma, Sentry, Google Calendar, Gmail
 
 Desktop Connectors (Settings > Connectors): PostHog, Vercel, Granola, Mermaid Chart, Google Drive, HuggingFace
 ### Required Connectors
@@ -162,7 +168,7 @@ ClinearHub relies on global OAuth connectors — it does **not** bundle its own 
 | **Enhanced** | Sentry | Error tracking, alerting, root cause analysis |
 | **Enhanced** | PostHog | Product analytics, feature adoption, funnels |
 | **Enhanced** | Vercel | Deployment status, preview verification |
-| **Supplementary** | Notion | Knowledge base, meeting notes |
+| **Enhanced** | Notion | Research hub, CRM, spec/plan library, stakeholder dashboards |
 | **Supplementary** | Figma | Design handoff, component specs |
 | **Supplementary** | Google Calendar | Sprint planning, standups |
 | **Supplementary** | Gmail | Stakeholder updates |

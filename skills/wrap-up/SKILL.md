@@ -62,8 +62,11 @@ See [plan-persistence](../plan-persistence/SKILL.md) for the full protocol.
 ### 1.5a — Identify Session Plan
 
 1. **Cowork**: Summarize session decisions, scope, and tasks into plan markdown
-2. **Code**: Read from active plan file if exists; otherwise compose from session context
-3. **Code + Plannotator**: If `~/.plannotator/history/` has a recent version, read it
+2. **Code (plan mode)**: Check `~/.claude/plans/` for files created this session.
+   Plan mode creates files like `~/.claude/plans/<random-name>.md`. If one exists
+   with a recent modification time, read it as the session plan.
+3. **Code (manual)**: If no plan mode file, compose from session context
+4. **Code + Plannotator**: If `~/.plannotator/history/` has a recent version, read it
 
 ### 1.5b — Promote or Update
 
@@ -71,11 +74,22 @@ See [plan-persistence](../plan-persistence/SKILL.md) for the full protocol.
 5. If exists: `update_document(id, content)` — append revision history entry
 6. If new: `create_document(title: "Plan: <ISSUE-ID> — <summary>", content, issue: "<id>")`
 7. Validate: `get_issue(includeRelations: true)` — confirm document attached
-8. Backlink: `create_comment(issueId, body: "Plan promoted: [title](url)\nReview: <plan-review-url>/plan/<doc-id>")`
+8. Backlink: `create_comment(issueId, body: "Plan promoted: [title](url)\nReview: https://plan-review-cianai.vercel.app/plan/<doc-id>")`
 
 ### 1.5c — Finalize Title
 
 9. `update_document(id, title: "Plan: <ISSUE-ID> — <outcome summary>")`
+
+### 1.5d — Notion Mirror
+
+10. If Notion connector is available, mirror the plan to Notion Specs & Plans DB:
+    - `notion-search` for existing page by Linear Issue ID
+    - If found: `notion-update-page` with updated content and Status
+    - If not found: `notion-create-pages` with plan content as page body
+    - Properties: Title, Status (active), Linear Document URL, Linear Issue ID, Author
+11. If Notion unavailable: skip, log "Notion mirror skipped"
+
+> See [notion-hub](../notion-hub/SKILL.md) for database schema and degradation pattern.
 
 ---
 
@@ -264,7 +278,7 @@ immediately.
 > **Context:** [Key facts the next session needs — entity IDs, version numbers,
 > branch names, API endpoints, error messages encountered]
 >
-> **Plan:** [Plan: <ISSUE-ID> — summary](linear-doc-url) | [Review](plan-review-url)
+> **Plan:** [Plan: <ISSUE-ID> — summary](linear-doc-url) | [Review](https://plan-review-cianai.vercel.app/plan/<doc-id>)
 >
 > **Verify:** [How to confirm the work succeeded]
 ```
@@ -284,6 +298,72 @@ immediately.
 2. If the session produced significant architectural decisions or debugging
    insights, verify they're captured in memory files (Phase 3 should have
    handled this — double-check)
+
+---
+
+## Phase 5.5: Carry-Forward Persistence
+
+Write structured next-session items to a durable file so they survive across
+sessions. This prevents the "lost handover" problem where next steps exist only
+in conversation screenshots.
+
+### 5.5a — Read Existing Carry-Forward
+
+1. Read `carry-forward.md` from the project's auto-memory directory
+   (e.g. `~/.claude/projects/<project>/memory/carry-forward.md`)
+2. If the file doesn't exist, create it with the template below
+3. Check each **Active** item against Linear — if the linked issue is Done,
+   move it to **Completed** with today's date
+
+### 5.5b — Extract New Items
+
+From the handover prompts (Phase 5b), extract each concrete next step as a
+carry-forward row:
+
+| Field | Source |
+|-------|--------|
+| **Item** | The action from the handover prompt (concise, imperative) |
+| **Source** | Linear issue ID if exists, otherwise "session" |
+| **Priority** | Inherit from Linear issue priority, or estimate (High/Medium/Low) |
+| **Category** | `deploy`, `feature`, `fix`, `manual`, `chore`, `eval` |
+
+### 5.5c — Write Updated File
+
+Update `carry-forward.md` using this format:
+
+```markdown
+# Carry-Forward Items
+
+> Auto-maintained by wrap-up skill Phase 5.5. Read at session start.
+> Last updated: [DATE] (session [N])
+
+## Active
+
+| # | Item | Source | Priority | Category |
+|---|------|--------|----------|----------|
+
+## Completed
+
+| # | Item | Completed | Date |
+|---|------|-----------|------|
+```
+
+**Rules:**
+- Number items sequentially (1, 2, 3...) within each section
+- Keep Active items sorted by priority (High → Medium → Low)
+- Retain last 10 Completed items; older ones can be removed
+- If an item has a Linear issue, format Source as the issue ID (e.g. `CIA-XXX`)
+- Manual items (Linear UI config, dashboard settings) use category `manual`
+
+### 5.5d — Update MEMORY.md
+
+Replace any "Recommended next actions" section in MEMORY.md with:
+
+```markdown
+## Next Actions
+
+See [carry-forward.md](carry-forward.md) for structured tracking of outstanding items.
+```
 
 ---
 
@@ -326,6 +406,7 @@ Present a single consolidated report combining all phases:
 - Full Phase 3 (memory)
 - Full Phase 4 (self-improvement)
 - Full Phase 5 (handover prompts)
+- Full Phase 5.5 (carry-forward persistence)
 
 ### Cowork Sessions (Claude Desktop)
 - Skip Phase 1 (no filesystem access)
@@ -334,6 +415,7 @@ Present a single consolidated report combining all phases:
 - Phase 3: memory updates via conversation summary only (no file writes)
 - Phase 4: findings noted for next Code session
 - Phase 5: handover prompts (conversational — cannot write to files)
+- Skip Phase 5.5 (no filesystem access — carry-forward items noted in handover only)
 
 ### Context Budget Trigger (60%+)
 - Abbreviated Phase 1 (commit current work, no PR)
@@ -342,4 +424,5 @@ Present a single consolidated report combining all phases:
 - Phase 3: write critical memory only
 - Skip Phase 4
 - Phase 5: single handover prompt covering remaining work
+- Phase 5.5: write carry-forward items (critical — this is what survives)
 - End with "Session split recommended — [handover prompt]"

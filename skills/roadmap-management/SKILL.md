@@ -119,7 +119,28 @@ save_status_update(
 | **At Risk** | 1+ milestones may slip, dependency unresolved, velocity declining |
 | **Off Track** | Milestones missed, critical blockers, requires intervention |
 
+## Notion Stakeholder Dashboard
+
+After generating the roadmap update, write an initiative status snapshot to the Notion Stakeholder Dashboard DB via MCP:
+
+```
+notion-create-pages(
+  database: "Stakeholder Dashboard",
+  properties: {
+    Period: "<quarter or cycle label>",
+    Type: "stakeholder-update",
+    Audience: "leadership",
+    "Linear Cycle": "<current cycle ID>",
+    "Metrics Snapshot": "<initiative health, milestone progress, RICE scores>"
+  },
+  content: "<full roadmap update markdown>"
+)
+```
+
+If the Notion MCP server is unavailable, skip silently — the roadmap update is still delivered in-session.
+
 ## Cross-Skill References
 
 - **clinearhub-workflow** — Overall 6-phase pipeline, sprint planning context
 - **issue-lifecycle** — How initiative-linked issues move through statuses
+- **notion-hub** — Notion MCP integration, Stakeholder Dashboard DB schema

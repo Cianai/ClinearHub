@@ -23,6 +23,7 @@ Fire after TI completes, before human review. Configured on Claudian team (inher
 |---|---------|---------|
 | 1 | Label = `type:bug` AND Priority = Urgent | Set status: Todo, Add label: `exec:quick`, Assign: Copilot |
 | 2 | Label = `type:bug` AND Priority = High | Set status: Todo, Add label: `exec:quick` |
+| 3 | Label = `type:spike` AND Status = Todo | Add label: `auto:investigate`, Add label: `ctx:autonomous` |
 
 ## Agent Dispatch (Label-Triggered)
 
@@ -52,6 +53,21 @@ Fire after TI completes, before human review. Configured on Claudian team (inher
   - Open PR with `Closes <ISSUE-ID>` in body
   - PR enters Copilot auto-review + CI pipeline
 
+### Investigation Dispatch
+
+- **Trigger:** Issue has `auto:investigate` label
+- **Action:** Routes to gh-aw `investigate-spike` workflow via Linear ↔ GitHub two-way sync
+- **What the agent does:**
+  - Reads issue description (research question, evaluation criteria, investigation scope)
+  - Uses Context7 (docs), Supabase (existing research data), paper-search (Semantic Scholar) MCPs
+  - Posts structured findings comment (summary, evidence, confidence, recommendation)
+  - Optionally creates up to 2 follow-up feature issues for actionable findings
+  - Does NOT create PRs — spikes produce knowledge, not code
+
+**Dispatch paths:**
+- **Organic:** Issue created → TI applies `type:spike` → human moves to Todo → triage rule #3 auto-applies `auto:investigate` → gh-aw picks up
+- **Mid-session (immediate):** Agent/human applies `auto:investigate` directly at creation → dispatches immediately in parallel with current session
+
 ## Manual Triage Protocol
 
 Daily sweep of the Linear Triage view (keyboard shortcut: `G T`). TI has already auto-applied team, project, and labels by the time human reviews.
@@ -75,7 +91,7 @@ For each issue in Triage:
    - Needs spec enrichment → apply `spec:draft` → ChatPRD handles
    - Ready to implement → apply `auto:implement` → gh-aw / Copilot handles
    - Needs human attention → assign to person, apply `ctx:human`
-   - Needs investigation → apply `type:spike`, assign to appropriate agent or human
+   - Needs investigation → apply `type:spike`, move to Todo → triage rule #3 auto-applies `auto:investigate` for agent dispatch (or assign to human if `exec:pair` needed)
 6. **Move out of Triage**: To Todo (queued), In Progress (starting now), or Backlog (not urgent)
 
 ### Triage Inbox (Linear Asks)
@@ -91,6 +107,7 @@ Linear Asks creates issues from email and Slack messages. These appear in Triage
 **Processing:**
 - Check the Asks source (email sender, Slack thread) for context
 - If it's a customer request: link to the customer in Linear Customer Requests
+- **CRM context enrichment:** `notion-search` for the reporter in CRM Contacts DB. If found, note their Role, Pipeline Stage, and Deal Value in the issue description to inform prioritization. A $50K prospect's bug report may warrant higher priority than an anonymous report.
 - If it's a feature request: create a proper issue with `spec:draft`
 - If it's a bug report: create with `type:bug`, include reproduction steps
 - If it's noise: archive or cancel with a brief reason

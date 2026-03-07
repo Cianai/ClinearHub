@@ -50,6 +50,30 @@ All CIA-XXX issue mentions must be clickable. Format depends on the target surfa
 | Linear issues/comments | `[Doc Title](https://linear.app/claudian/document/<slug>)` |
 | Session output | `[Doc Title](https://linear.app/claudian/document/<slug>)` |
 
+## Notion References
+
+When linking to Notion pages or databases from other surfaces:
+
+| Surface | Format | Example |
+|---------|--------|---------|
+| Linear issues/comments | `[Page Title](https://notion.so/<page-id>)` | Web URL for click-through |
+| GitHub docs | `[Page Title](https://notion.so/<page-id>)` | Web URL |
+| Session output | `[Page Title](https://notion.so/<page-id>)` | Full URL, clickable |
+| Stakeholder comms | Inline context, no raw links | "See the Research Hub for details" |
+
+**Notion Database References:**
+
+| Database | Shorthand | Usage |
+|----------|-----------|-------|
+| Research Papers | `Research Hub` | "Added to Research Hub" |
+| Research Findings | `Findings DB` | "Finding logged in Findings DB" |
+| CRM Contacts | `CRM` | "Contact created in CRM" |
+| CRM Interactions | `CRM Activity Log` | "Interaction logged" |
+| Specs & Plans | `Spec Library` | "Plan mirrored to Spec Library" |
+| Stakeholder Dashboard | `Dashboard` | "Update posted to Dashboard" |
+
+**Rule:** When referencing Notion pages in Linear comments or plans, always use the full `https://notion.so/` URL. Never use bare page IDs.
+
 ## Issue Content Quality
 
 Absorbed from global CLAUDE.md rules `[DOCUMENTATION LINK]` and `[INLINE LINKS]`.
@@ -111,6 +135,7 @@ Generalized from `/stakeholder-update`'s audience adaptation. Every command and 
 | **GitHub** (README, PR body, specs) | Developers, public | Technical, concise | `linear://` for Linear refs, relative for repo files | Use freely |
 | **Linear** (issues, comments, plans) | PM, agents, stakeholders | Process-focused, structured | GitHub URLs for source files, web URLs for Linear | Define on first use |
 | **Cowork / session output** | Human PM | Conversational, explanatory | Full URLs, clickable everything | Define parenthetically |
+| **Notion** (databases, pages) | PM, stakeholders, browsing humans | Structured, scannable | Notion page links for cross-refs, GitHub URLs for source | Define on first use |
 | **Stakeholder comms** | Exec / customer / board | Strategic, outcome-focused | Minimal links, inline context | Avoid entirely |
 
 **Key principle:** The same information is presented differently depending on who reads it. Technical content stays intact — only the framing adapts.
@@ -168,3 +193,4 @@ Linear supports [native video embed](https://linear.app/docs/editor) — YouTube
 - **clinearhub-workflow** — Cross-Surface References section (references this file)
 - **stakeholder-update** — Language Adaptation table (detailed audience templates)
 - **plan-persistence** — Plan Format Hyperlink Rules (specific to plan documents)
+- **notion-hub** — Notion database schema, MCP tool reference, graceful degradation

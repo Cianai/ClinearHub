@@ -84,7 +84,7 @@ Post a comment on the issue linking to the plan:
 ```
 create_comment(
   issueId: "<issue_id>",
-  body: "Plan promoted: [Plan: <ISSUE-ID> — <summary>](<document_url>)\nReview & annotate: <plan-review-app-url>/plan/<doc-id>"
+  body: "Plan promoted: [Plan: <ISSUE-ID> — <summary>](<document_url>)\nReview & annotate: https://plan-review-cianai.vercel.app/plan/<doc-id>"
 )
 ```
 
@@ -95,6 +95,21 @@ create_comment(
   body: "Plan updated: [Plan: <ISSUE-ID> — <summary>](<document_url>) — v<N>: <change summary>"
 )
 ```
+
+### 7. Notion Mirror (if Notion connector available)
+
+Mirror the plan to Notion Specs & Plans DB for human browsing. This step is optional and degrades gracefully.
+
+1. `notion-search` for existing page by Linear Issue ID in Specs & Plans DB
+2. If found: `notion-update-page` — update Status, content, Last Synced
+3. If not found: `notion-create-pages` in Specs & Plans DB:
+   - Properties: Title, Status (draft/active/finalized), Linear Document URL, Linear Issue ID, Author, Tags
+   - Page body: plan markdown rendered as Notion blocks
+4. Log: "Mirrored to Notion: [Plan title](notion-url)"
+
+If Notion unavailable: skip silently, log "Notion mirror skipped — plan persisted to Linear only."
+
+> See [notion-hub](../../notion-hub/SKILL.md) for database schema and MCP tool reference.
 
 ## Finalization Protocol (Session Close)
 

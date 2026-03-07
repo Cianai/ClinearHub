@@ -90,6 +90,29 @@ projects:
         # Only needed for location-based features (e.g., SoilWorx)
         GOOGLE_MAPS_API_KEY: ""
 
+        # ── Tier 3b: Notion Workspace (Enhanced) ───────────────────────
+        # Database IDs from Notion workspace. Required for Notion MCP
+        # integration (research sync, CRM, spec library, dashboards).
+        # Find IDs: open database in Notion → Share → Copy link → extract ID from URL.
+
+        # Notion database: Research Papers
+        NOTION_DB_RESEARCH_PAPERS: ""
+
+        # Notion database: Research Findings
+        NOTION_DB_RESEARCH_FINDINGS: ""
+
+        # Notion database: CRM Contacts
+        NOTION_DB_CRM_CONTACTS: ""
+
+        # Notion database: CRM Interactions
+        NOTION_DB_CRM_INTERACTIONS: ""
+
+        # Notion database: Specs & Plans
+        NOTION_DB_SPECS_PLANS: ""
+
+        # Notion database: Stakeholder Dashboard
+        NOTION_DB_STAKEHOLDER_DASHBOARD: ""
+
         # ── Tier 4: Research MCPs (optional) ─────────────────────────
         # For research-heavy workflows with academic paper search,
         # ML model discovery, and library management.
