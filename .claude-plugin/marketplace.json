@@ -1,0 +1,68 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "clinearhub-marketplace",
+  "description": "ClinearHub plugin marketplace — Cowork-first PM methodology for small teams using Linear + GitHub + monday.com + Notion + ChatPRD",
+  "owner": {
+    "name": "Cian O'Sullivan",
+    "email": "cianos95@gmail.com",
+    "url": "https://github.com/Cianai"
+  },
+  "plugins": [
+    {
+      "name": "clinearhub",
+      "source": "./",
+      "description": "Cowork-first PM methodology for Claudian. Upstream spec creation (ChatPRD), GitHub Agentic Workflows for autonomous implementation, post-merge reconciliation, business development, competitive intelligence, content marketing, and small-team finance — built for Linear + GitHub + monday.com + Notion + ChatPRD + PostHog + Sentry + Stripe + Clay + Excalidraw.",
+      "version": "2.5.0",
+      "author": {
+        "name": "Cian O'Sullivan",
+        "url": "https://github.com/Cianai"
+      },
+      "homepage": "https://github.com/Cianai/ClinearHub",
+      "repository": "https://github.com/Cianai/ClinearHub",
+      "license": "Apache-2.0",
+      "keywords": [
+        "clinearhub",
+        "pm-methodology",
+        "cowork-first",
+        "linear",
+        "agent-pipeline",
+        "chatprd",
+        "business-development",
+        "competitive-intelligence",
+        "content-marketing",
+        "small-team-finance"
+      ],
+      "category": "development",
+      "commands": [
+        "./commands/call-prep.md",
+        "./commands/client-review.md",
+        "./commands/competitive-brief.md",
+        "./commands/content-plan.md",
+        "./commands/launch-brief.md"
+      ],
+      "skills": [
+        "./skills/business-development",
+        "./skills/clinear-context",
+        "./skills/clinearhub-workflow",
+        "./skills/competitive-intelligence",
+        "./skills/content-marketing",
+        "./skills/crm-management",
+        "./skills/customer-ops",
+        "./skills/data-analytics",
+        "./skills/deployment-verification",
+        "./skills/humanizer",
+        "./skills/incident-response",
+        "./skills/issue-lifecycle",
+        "./skills/notion-hub",
+        "./skills/plan-persistence",
+        "./skills/research-ideation",
+        "./skills/research-intelligence",
+        "./skills/roadmap-management",
+        "./skills/small-team-finance",
+        "./skills/task-management",
+        "./skills/wrap-up"
+      ]
+    }
+  ],
+  "version": "2.5.0"
+}
